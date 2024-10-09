@@ -5,6 +5,10 @@ export const createPage = (shortName, title, url, logoUrl, domain = null) => pos
 export const getPages = () => getProp("/pages", "pages");
 export const getPage = (pageId, includes) => get(withIncludes("/pages/" + pageId, includes));
 
+export const getPageServices = (pageId, includes) => getProp(withIncludes("/pages/" + pageId + "/services", includes), "services");
+export const addPageService = (pageId, serviceId) => postNoContent("/pages/" + pageId + "/services/" + serviceId);
+export const removePageService = (pageId, serviceId) => deleteNoContent("/pages/" + pageId + "/services/" + serviceId);
+
 export const getCheckers = () => getProp("/checkers", "checkers");
 export const getChecker = (checkerId, includes) => get(withIncludes("/checkers/" + checkerId, includes));
 
