@@ -1,6 +1,7 @@
 export const getServices = () => getProp("/services", "services");
 export const getService = (serviceId, includes = []) => get(withIncludes("/services/" + serviceId, includes));
 
+export const createPage = (shortName, title, url, logoUrl, domain = null) => postProp("/pages", { shortName, title, url, logoUrl, domain }, "id");
 export const getPages = () => getProp("/pages", "pages");
 export const getPage = (pageId, includes) => get(withIncludes("/pages/" + pageId, includes));
 
@@ -35,7 +36,7 @@ const get = (url) => requestJson(url, "GET");
 const getProp = (url, name) => requestJson(url, "GET").then((res) => res[name]);
 
 //const post = (url, body) => requestJson(url, "POST", body);
-//const postProp = (url, body, name) => requestJson(url, "POST", body).then((res) => res[name]);
+const postProp = (url, body, name) => requestJson(url, "POST", body).then((res) => res[name]);
 const postNoContent = (url, body) => request(url, "POST", body).then(() => undefined);
 
 const deleteNoContent = (url) => request(url, "DELETE").then(() => undefined);

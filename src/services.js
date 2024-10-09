@@ -16,9 +16,7 @@ export default class Services extends Component {
         this.setState({ loading: true });
         getServices().then((services) => {
             this.setState({ loading: false, services });
-        }).catch(() => {
-            this.setState({ loading: false, info: "An error occurred" });
-        });
+        }).catch((error) => this.setState({ loading: false, info: error }));
     }
 
     render() {

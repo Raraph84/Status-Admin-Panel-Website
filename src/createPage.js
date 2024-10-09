@@ -1,5 +1,6 @@
 import { Component, createRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { createPage } from "./api";
 
 import "./styles/page.scss";
 
@@ -9,8 +10,8 @@ class CreatePage extends Component {
 
         super(props);
 
-        this.titleInputRef = createRef();
         this.shortNameInputRef = createRef();
+        this.titleInputRef = createRef();
         this.urlInputRef = createRef();
         this.logoUrlInputRef = createRef();
         this.domainInputRef = createRef();
@@ -21,7 +22,10 @@ class CreatePage extends Component {
     render() {
 
         const processCreatePage = () => {
-
+            this.setState({ loading: true, info: null });
+            createPage(this.shortNameInputRef.current.value, this.titleInputRef.current.value, this.urlInputRef.current.value, this.logoUrlInputRef.current.value, this.domainInputRef.current.value || null).then((pageId) => {
+                this.props.navigate("/pages/" + pageId);
+            }).catch((error) => this.setState({ loading: false, info: error }));
         };
 
         return <div className="create-page-page">
@@ -31,10 +35,10 @@ class CreatePage extends Component {
             {this.state.loading && <div className="state">Loading...</div>}
             {this.state.info && <div className="state">{this.state.info}</div>}
 
-            <div>Title:</div>
-            <input ref={this.titleInputRef} disabled={this.state.loading} onKeyDown={(event) => event.key === "Enter" && this.shortNameInputRef.current.focus()} />
             <div>Short name:</div>
-            <input ref={this.shortNameInputRef} disabled={this.state.loading} onKeyDown={(event) => event.key === "Enter" && this.urlInputRef.current.focus()} />
+            <input ref={this.shortNameInputRef} disabled={this.state.loading} onKeyDown={(event) => event.key === "Enter" && this.titleInputRef.current.focus()} />
+            <div>Title:</div>
+            <input ref={this.titleInputRef} disabled={this.state.loading} onKeyDown={(event) => event.key === "Enter" && this.urlInputRef.current.focus()} />
             <div>URL:</div>
             <input ref={this.urlInputRef} disabled={this.state.loading} onKeyDown={(event) => event.key === "Enter" && this.logoUrlInputRef.current.focus()} />
             <div>Logo URL:</div>

@@ -18,23 +18,17 @@ class Checker extends Component {
         this.setState({ loading: true });
         getChecker(this.props.params.checkerId).then((checker) => {
             this.setState({ loading: false, checker });
-        }).catch(() => {
-            this.setState({ loading: false, info: "An error occurred" });
-        });
+        }).catch((error) => this.setState({ loading: false, info: error }));
 
         this.setState({ loading: true });
         getCheckerServices(this.props.params.checkerId, ["service"]).then((checkerServices) => {
             this.setState({ loading: false, checkerServices });
-        }).catch(() => {
-            this.setState({ loading: false, info: "An error occurred" });
-        });
+        }).catch((error) => this.setState({ loading: false, info: error }));
 
         this.setState({ loading: true });
         getServices().then((services) => {
             this.setState({ loading: false, services });
-        }).catch(() => {
-            this.setState({ loading: false, info: "An error occurred" });
-        });
+        }).catch((error) => this.setState({ loading: false, info: error }));
     }
 
     render() {
@@ -43,18 +37,14 @@ class Checker extends Component {
             this.setState({ loading: true, info: null });
             addCheckerService(this.state.checker.id, service.id).then(() => {
                 this.setState({ loading: false, checkerServices: this.state.checkerServices.concat({ checker: this.state.checker.id, service }).sort((a, b) => a.service.id - b.service.id) });
-            }).catch(() => {
-                this.setState({ loading: false, info: "An error occurred" });
-            });
+            }).catch((error) => this.setState({ loading: false, info: error }));
         };
 
         const processRemoveCheckerService = (serviceId) => {
             this.setState({ loading: true, info: null });
             removeCheckerService(this.state.checker.id, serviceId).then(() => {
                 this.setState({ loading: false, checkerServices: this.state.checkerServices.filter((service) => service.service.id !== serviceId) });
-            }).catch(() => {
-                this.setState({ loading: false, info: "An error occurred" });
-            });
+            }).catch((error) => this.setState({ loading: false, info: error }));
         };
 
         const nonAddedServices = this.state.services?.filter((service) => !this.state.checkerServices?.some((checkerService) => checkerService.service.id === service.id));

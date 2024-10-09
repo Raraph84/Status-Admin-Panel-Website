@@ -18,9 +18,7 @@ class Page extends Component {
         this.setState({ loading: true });
         getPage(this.props.params.pageId, ["subPages", "subPages.subPage", "services", "services.service"]).then((page) => {
             this.setState({ loading: false, page });
-        }).catch(() => {
-            this.setState({ loading: false, info: "An error occurred" });
-        });
+        }).catch((error) => this.setState({ loading: false, info: error }));
     }
 
     render() {

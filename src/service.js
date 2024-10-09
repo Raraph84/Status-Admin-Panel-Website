@@ -16,9 +16,7 @@ class Service extends Component {
         this.setState({ loading: true });
         getService(this.props.params.serviceId).then((service) => {
             this.setState({ loading: false, service });
-        }).catch(() => {
-            this.setState({ loading: false, info: "An error occurred" });
-        });
+        }).catch((error) => this.setState({ loading: false, info: error }));
     }
 
     render() {
