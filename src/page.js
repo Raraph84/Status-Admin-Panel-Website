@@ -10,41 +10,55 @@ class Page extends Component {
 
         super(props);
 
-        this.state = { loading: false, info: null, page: null, pageServices: null, services: null };
+        this.state = { loading: false, info: null, page: null, pageServices: null, addService: false, services: null };
     }
 
     componentDidMount() {
 
         this.setState({ loading: true });
-        getPage(this.props.params.pageId, ["subPages", "subPages.subPage"]).then((page) => {
-            this.setState({ loading: false, page });
-        }).catch((error) => this.setState({ loading: false, info: error }));
-
-        this.setState({ loading: true });
-        getPageServices(this.props.params.pageId, ["service"]).then((pageServices) => {
-            this.setState({ loading: false, pageServices });
-        }).catch((error) => this.setState({ loading: false, info: error }));
-
-        this.setState({ loading: true });
-        getServices().then((services) => {
-            this.setState({ loading: false, services });
-        }).catch((error) => this.setState({ loading: false, info: error }));
+        Promise.all([
+            getPage(this.props.params.pageId, ["subPages", "subPages.subPage"])
+                .then((page) => this.setState({ page }))
+                .catch((error) => this.setState({ info: error })),
+            getPageServices(this.props.params.pageId, ["service"])
+                .then((pageServices) => this.setState({ pageServices }))
+                .catch((error) => this.setState({ info: error }))
+        ]).then(() => this.setState({ loading: false }));
     }
 
     render() {
 
+        const toggleAddServices = () => {
+
+            if (this.state.addService) {
+                this.setState({ addService: !this.state.addService, services: null });
+                return;
+            }
+
+            this.setState({ loading: true, info: null });
+            getServices()
+                .then((services) => this.setState({ loading: false, addService: true, services }))
+                .catch((error) => this.setState({ loading: false, info: error }));
+        };
+
         const processAddPageService = (service) => {
             this.setState({ loading: true, info: null });
-            addPageService(this.state.page.id, service.id).then(() => {
-                this.setState({ loading: false, pageServices: this.state.pageServices.concat({ page: this.state.page.id, service, position: this.state.pageServices.length + 1, displayName: null }).sort((a, b) => a.service.id - b.service.id) });
-            }).catch((error) => this.setState({ loading: false, info: error }));
+            addPageService(this.state.page.id, service.id)
+                .then(() => this.setState({
+                    loading: false,
+                    pageServices: this.state.pageServices.concat({ page: this.state.page.id, service, position: this.state.pageServices.length + 1, displayName: null }).sort((a, b) => a.service.id - b.service.id)
+                }))
+                .catch((error) => this.setState({ loading: false, info: error }));
         };
 
         const processRemovePageService = (pageService) => {
             this.setState({ loading: true, info: null });
-            removePageService(this.state.page.id, pageService.service.id).then(() => {
-                this.setState({ loading: false, pageServices: this.state.pageServices.filter((service) => service.service.id !== pageService.service.id).map((service) => ({ ...service, position: service.position > pageService.position ? service.position - 1 : service.position })) });
-            }).catch((error) => this.setState({ loading: false, info: error }));
+            removePageService(this.state.page.id, pageService.service.id)
+                .then(() => this.setState({
+                    loading: false,
+                    pageServices: this.state.pageServices.filter((service) => service.service.id !== pageService.service.id).map((service) => ({ ...service, position: service.position > pageService.position ? service.position - 1 : service.position }))
+                }))
+                .catch((error) => this.setState({ loading: false, info: error }));
         };
 
         const nonAddedServices = this.state.services?.filter((service) => !this.state.pageServices?.some((pageService) => pageService.service.id === service.id));
@@ -88,13 +102,17 @@ class Page extends Component {
                     </tbody>
                 </table>}
                 {!this.state.pageServices?.length && <div>No services yet</div>}
-                <br />
 
-                <div>Non added services:</div>
-                <div>{nonAddedServices?.map((service) =>
-                    <div key={service.id}>- <a href={"/services/" + service.id}>{service.name}</a> <button disabled={this.state.loading}
-                        onClick={() => processAddPageService(service)}>Add</button></div>)}</div>
-                <div>{!nonAddedServices?.length && <div>No services not added</div>}</div>
+                <div><button disabled={this.state.loading} className="add-button" onClick={toggleAddServices}>Add services</button></div>
+                {this.state.addService && <>
+                    <br />
+                    <div>Non added services:</div>
+                    <div>{nonAddedServices?.map((service) =>
+                        <div key={service.id}>- <a href={"/services/" + service.id}>{service.name}</a> <button disabled={this.state.loading} className="add-button"
+                            onClick={() => processAddPageService(service)}>Add</button></div>
+                    )}</div>
+                    <div>{!nonAddedServices?.length && <div>No services not added</div>}</div>
+                </>}
 
             </div>}
 

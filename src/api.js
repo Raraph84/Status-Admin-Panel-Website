@@ -1,3 +1,4 @@
+export const createService = (name, type, host, disabled) => postProp("/services", { name, type, host, disabled }, "id");
 export const getServices = () => getProp("/services", "services");
 export const getService = (serviceId, includes = []) => get(withIncludes("/services/" + serviceId, includes));
 

@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 import Services from "./services";
+import CreateService from "./createService";
 import Service from "./service";
 import Pages from "./pages";
 import CreatePage from "./createPage";
@@ -25,6 +26,7 @@ class App extends Component {
                 <Routes>
                     <Route path="/" element={<div>Home</div>} />
                     <Route path="/services" element={<Services />} />
+                    <Route path="/services/create" element={<CreateService />} />
                     <Route path="/services/:serviceId" element={<Service />} />
                     <Route path="/pages" element={<Pages />} />
                     <Route path="/pages/create" element={<CreatePage />} />

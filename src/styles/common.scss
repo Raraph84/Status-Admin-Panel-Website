@@ -4,19 +4,20 @@
     box-sizing: border-box;
 }
 
+button,
 input,
-button {
+select {
     background-color: transparent;
     border: none;
     font: inherit;
 }
 
-input {
-    outline: none;
-}
-
 button {
     cursor: pointer;
+}
+
+input {
+    outline: none;
 }
 
 a {
@@ -40,7 +41,9 @@ a {
     text-decoration: underline;
 }
 
-input {
+button,
+input:not([type=checkbox]),
+select {
     padding: 4px 6px;
     border: 1px solid black;
     border-radius: 5px;
@@ -48,8 +51,6 @@ input {
 
 button {
     padding: 4px 8px;
-    border: 1px solid black;
-    border-radius: 5px;
 }
 
 .title {
