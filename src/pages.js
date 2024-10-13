@@ -14,9 +14,9 @@ export default class Pages extends Component {
     componentDidMount() {
 
         this.setState({ loading: true });
-        getPages().then((pages) => {
-            this.setState({ loading: false, pages });
-        }).catch((error) => this.setState({ loading: false, info: error }));
+        getPages()
+            .then((pages) => this.setState({ loading: false, pages }))
+            .catch((error) => this.setState({ loading: false, info: error }));
     }
 
     render() {

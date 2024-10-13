@@ -22,10 +22,11 @@ class CreatePage extends Component {
     render() {
 
         const processCreatePage = () => {
+
             this.setState({ loading: true, info: null });
-            createPage(this.shortNameInputRef.current.value, this.titleInputRef.current.value, this.urlInputRef.current.value, this.logoUrlInputRef.current.value, this.domainInputRef.current.value || null).then((pageId) => {
-                this.props.navigate("/pages/" + pageId);
-            }).catch((error) => this.setState({ loading: false, info: error }));
+            createPage(this.shortNameInputRef.current.value, this.titleInputRef.current.value, this.urlInputRef.current.value, this.logoUrlInputRef.current.value, this.domainInputRef.current.value || null)
+                .then((pageId) => this.props.navigate("/pages/" + pageId))
+                .catch((error) => this.setState({ loading: false, info: error }));
         };
 
         return <div className="create-page-page">

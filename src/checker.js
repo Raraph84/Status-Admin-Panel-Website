@@ -16,19 +16,17 @@ class Checker extends Component {
     componentDidMount() {
 
         this.setState({ loading: true });
-        getChecker(this.props.params.checkerId).then((checker) => {
-            this.setState({ loading: false, checker });
-        }).catch((error) => this.setState({ loading: false, info: error }));
-
-        this.setState({ loading: true });
-        getCheckerServices(this.props.params.checkerId, ["service"]).then((checkerServices) => {
-            this.setState({ loading: false, checkerServices });
-        }).catch((error) => this.setState({ loading: false, info: error }));
-
-        this.setState({ loading: true });
-        getServices().then((services) => {
-            this.setState({ loading: false, services });
-        }).catch((error) => this.setState({ loading: false, info: error }));
+        Promise.all([
+            getChecker(this.props.params.checkerId)
+                .then((checker) => this.setState({ checker }))
+                .catch((error) => this.setState({ info: error })),
+            getCheckerServices(this.props.params.checkerId, ["service"])
+                .then((checkerServices) => this.setState({ checkerServices }))
+                .catch((error) => this.setState({ info: error })),
+            getServices()
+                .then((services) => this.setState({ services }))
+                .catch((error) => this.setState({ info: error }))
+        ]).then(() => this.setState({ loading: false }));
     }
 
     render() {

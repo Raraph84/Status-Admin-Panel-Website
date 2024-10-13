@@ -14,9 +14,9 @@ class Service extends Component {
     componentDidMount() {
 
         this.setState({ loading: true });
-        getService(this.props.params.serviceId).then((service) => {
-            this.setState({ loading: false, service });
-        }).catch((error) => this.setState({ loading: false, info: error }));
+        getService(this.props.params.serviceId)
+            .then((service) => this.setState({ loading: false, service }))
+            .catch((error) => this.setState({ loading: false, info: error }));
     }
 
     render() {

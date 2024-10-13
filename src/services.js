@@ -14,9 +14,9 @@ export default class Services extends Component {
     componentDidMount() {
 
         this.setState({ loading: true });
-        getServices().then((services) => {
-            this.setState({ loading: false, services });
-        }).catch((error) => this.setState({ loading: false, info: error }));
+        getServices()
+            .then((services) => this.setState({ loading: false, services }))
+            .catch((error) => this.setState({ loading: false, info: error }));
     }
 
     render() {

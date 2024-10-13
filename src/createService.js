@@ -21,10 +21,11 @@ class CreateService extends Component {
     render() {
 
         const processCreateService = () => {
+
             this.setState({ loading: true, info: null });
-            createService(this.nameInputRef.current.value, this.typeSelectRef.current.value, this.hostInputRef.current.value, this.disabledInputRef.current.checked).then((serviceId) => {
-                this.props.navigate("/services/" + serviceId);
-            }).catch((error) => this.setState({ loading: false, info: error }));
+            createService(this.nameInputRef.current.value, this.typeSelectRef.current.value, this.hostInputRef.current.value, this.disabledInputRef.current.checked)
+                .then((serviceId) => this.props.navigate("/services/" + serviceId))
+                .catch((error) => this.setState({ loading: false, info: error }));
         };
 
         return <div className="create-service-page">

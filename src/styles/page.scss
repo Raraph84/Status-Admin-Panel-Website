@@ -1,10 +1,26 @@
+@import "common.scss";
+
 .page-page {
     table {
-        margin: 4px 0;
+        margin-top: 4px;
+
+        .dragging {
+            display: table;
+            border-bottom: 1px solid black;
+        }
+
+        .actions {
+            display: flex;
+            gap: 4px;
+
+            div {
+                @extend button;
+            }
+        }
     }
 
-    .add-button {
-        margin: 4px 0;
+    &>button {
+        margin: 8px 0;
     }
 }
 

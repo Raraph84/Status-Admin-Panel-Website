@@ -14,9 +14,9 @@ export default class Checkers extends Component {
     componentDidMount() {
 
         this.setState({ loading: true });
-        getCheckers().then((checkers) => {
-            this.setState({ loading: false, checkers });
-        }).catch((error) => this.setState({ loading: false, info: error }));
+        getCheckers()
+            .then((checkers) => this.setState({ loading: false, checkers }))
+            .catch((error) => this.setState({ loading: false, info: error }));
     }
 
     render() {
