@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
+import { LinkedTr } from "./utils";
 import { getServices } from "./api";
 
 export default class Services extends Component {
@@ -28,7 +29,22 @@ export default class Services extends Component {
             <div><Link to="/services/create">Create service</Link></div>
             <br />
 
-            {this.state.services && <div>{this.state.services.map((service) => <div key={service.id}>- <Link to={"/services/" + service.id}>{service.name}</Link></div>)}</div>}
+            {this.state.services && <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Disabled</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.state.services.map((service) => <LinkedTr key={service.id} to={"/services/" + service.id}>
+                        <td>{service.name}</td>
+                        <td>{{ website: "Website", api: "API", gateway: "Gateway", minecraft: "Minecraft", server: "Server" }[service.type]}</td>
+                        <td>{service.disabled ? "Yes" : "No"}</td>
+                    </LinkedTr>)}
+                </tbody>
+            </table>}
 
         </div>;
     }

@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Link } from "react-router-dom";
+import { LinkedTr } from "./utils";
 import { getCheckers } from "./api";
 
 export default class Checkers extends Component {
@@ -25,7 +25,24 @@ export default class Checkers extends Component {
             {this.state.loading && <div className="state">Loading...</div>}
             {this.state.info && <div className="state">{this.state.info}</div>}
 
-            {this.state.checkers && <div>{this.state.checkers.map((checker) => <div key={checker.id}>- <Link to={"/checkers/" + checker.id}>{checker.name} {checker.location}</Link></div>)}</div>}
+            {this.state.checkers && <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Description</th>
+                        <th>Hidden</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.state.checkers.map((checker) => <LinkedTr key={checker.id} to={"/checkers/" + checker.id}>
+                        <td>{checker.name}</td>
+                        <td>{checker.location}</td>
+                        <td>{checker.description}</td>
+                        <td>{checker.hidden ? "Yes" : "No"}</td>
+                    </LinkedTr>)}
+                </tbody>
+            </table>}
 
         </div>;
     }

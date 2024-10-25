@@ -92,4 +92,14 @@ table {
             }
         }
     }
+
+    .linked {
+        &:hover td {
+            background-color: #f0f0f0;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    }
 }

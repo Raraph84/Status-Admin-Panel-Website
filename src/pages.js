@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
 import { getPages } from "./api";
+import { LinkedTr } from "./utils";
 
 export default class Pages extends Component {
 
@@ -28,7 +29,22 @@ export default class Pages extends Component {
             <div><Link to="/pages/create">Create page</Link></div>
             <br />
 
-            {this.state.pages && <div>{this.state.pages.map((page) => <div key={page.id}>- <Link to={"/pages/" + page.id}>{page.title}</Link></div>)}</div>}
+            {this.state.pages && <table>
+                <thead>
+                    <tr>
+                        <th>Short name</th>
+                        <th>Title</th>
+                        <th>Domain</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.state.pages.map((page) => <LinkedTr key={page.id} to={"/pages/" + page.id}>
+                        <td>{page.shortName}</td>
+                        <td>{page.title}</td>
+                        <td>{page.domain ?? "N/A"}</td>
+                    </LinkedTr>)}
+                </tbody>
+            </table>}
 
         </div>;
     }
