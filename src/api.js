@@ -1,6 +1,7 @@
 export const createService = (name, type, host, disabled) => postProp("/services", { name, type, host, disabled }, "id");
 export const getServices = () => getProp("/services", "services");
 export const getService = (serviceId, includes = []) => get(withIncludes("/services/" + serviceId, includes));
+export const updateService = (serviceId, updates) => patchNoContent("/services/" + serviceId, updates);
 
 export const createPage = (shortName, title, url, logoUrl, domain = null) => postProp("/pages", { shortName, title, url, logoUrl, domain }, "id");
 export const getPages = () => getProp("/pages", "pages");

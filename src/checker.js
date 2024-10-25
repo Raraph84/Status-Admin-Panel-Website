@@ -59,20 +59,39 @@ class Checker extends Component {
 
         return <div className="checker-page">
 
+            <div className="title">Checker</div>
+
             {this.state.loading && <div className="state">Loading...</div>}
             {this.state.info && <div className="state">{this.state.info}</div>}
 
-            {this.state.checker && <>
+            <div>Name: {this.state.checker?.name}</div>
+            <div>Description: {this.state.checker?.description}</div>
+            <div>Location: {this.state.checker?.location}</div>
+            <div>Check second: {this.state.checker?.checkSecond}</div>
+            <div>Hidden: {this.state.checker?.hidden ? "Yes" : "No"}</div>
+            <br />
 
-                <div>Name: {this.state.checker.name}</div>
-                <div>Description: {this.state.checker.description}</div>
-                <div>Location: {this.state.checker.location}</div>
-                <div>Check second: {this.state.checker.checkSecond}</div>
-                <div>Hidden: {this.state.checker.hidden ? "Yes" : "No"}</div>
-                <br />
+            <div>Services:</div>
+            {!!this.state.checkerServices?.length && <table>
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.state.checkerServices?.map((service) => <tr key={service.service.id}>
+                        <td><Link to={"/services/" + service.service.id}>{service.service.name}</Link></td>
+                        <td><button disabled={this.state.loading} onClick={() => removeServiceHandler(service)}>Remove</button></td>
+                    </tr>)}
+                </tbody>
+            </table>}
+            {!this.state.checkerServices?.length && <div>No services yet</div>}
 
-                <div>Services:</div>
-                {!!this.state.checkerServices?.length && <table>
+            <button disabled={this.state.loading} onClick={toggleAddServices}>Add services</button>
+            {this.state.addService && <>
+                <div>Non added services:</div>
+                {!!nonAddedServices?.length && <table>
                     <thead>
                         <tr>
                             <th>Service</th>
@@ -80,34 +99,13 @@ class Checker extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.checkerServices?.map((service) => <tr key={service.service.id}>
-                            <td><Link to={"/services/" + service.service.id}>{service.service.name}</Link></td>
-                            <td><button disabled={this.state.loading} onClick={() => removeServiceHandler(service)}>Remove</button></td>
+                        {nonAddedServices?.map((service) => <tr key={service.id}>
+                            <td><Link to={"/services/" + service.id}>{service.name}</Link></td>
+                            <td><button disabled={this.state.loading} onClick={() => addServiceHandler(service)}>Add</button></td>
                         </tr>)}
                     </tbody>
                 </table>}
-                {!this.state.checkerServices?.length && <div>No services yet</div>}
-
-                <button disabled={this.state.loading} onClick={toggleAddServices}>Add services</button>
-                {this.state.addService && <>
-                    <div>Non added services:</div>
-                    {!!nonAddedServices?.length && <table>
-                        <thead>
-                            <tr>
-                                <th>Service</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {nonAddedServices?.map((service) => <tr key={service.id}>
-                                <td><Link to={"/services/" + service.id}>{service.name}</Link></td>
-                                <td><button disabled={this.state.loading} onClick={() => addServiceHandler(service)}>Add</button></td>
-                            </tr>)}
-                        </tbody>
-                    </table>}
-                    {!nonAddedServices?.length && <div>No services not added</div>}
-                </>}
-
+                {!nonAddedServices?.length && <div>No services not added</div>}
             </>}
 
         </div>;

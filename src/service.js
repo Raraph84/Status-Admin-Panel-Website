@@ -1,6 +1,6 @@
-import { Component } from "react";
+import { Component, createRef } from "react";
 import { useParams } from "react-router-dom";
-import { getService } from "./api";
+import { getService, updateService } from "./api";
 
 class Service extends Component {
 
@@ -8,7 +8,12 @@ class Service extends Component {
 
         super(props);
 
-        this.state = { loading: false, info: null, service: null };
+        this.nameInputRef = createRef();
+        this.typeSelectRef = createRef();
+        this.hostInputRef = createRef();
+        this.disabledInputRef = createRef();
+
+        this.state = { loading: false, info: null, service: null, editing: false };
     }
 
     componentDidMount() {
@@ -20,17 +25,73 @@ class Service extends Component {
     }
 
     render() {
+
+        const editHandler = () => {
+
+            const updates = {};
+            if (this.nameInputRef.current.value.trim() !== this.state.service.name) updates.name = this.nameInputRef.current.value.trim();
+            if (this.typeSelectRef.current.value !== this.state.service.type) updates.type = this.typeSelectRef.current.value;
+            if (this.hostInputRef.current.value.trim() !== this.state.service.host) updates.host = this.hostInputRef.current.value.trim();
+            if (this.disabledInputRef.current.checked !== this.state.service.disabled) updates.disabled = this.disabledInputRef.current.checked;
+
+            if (!Object.keys(updates).length) {
+                this.setState({ editing: false });
+                return;
+            }
+
+            this.setState({ loading: true, info: null });
+            updateService(this.state.service.id, updates)
+                .then(() => this.setState({ loading: false, editing: false, service: { ...this.state.service, ...updates } }))
+                .catch((error) => this.setState({ loading: false, info: error }));
+        };
+
         return <div>
+
+            <div className="title">Service</div>
 
             {this.state.loading && <div className="state">Loading...</div>}
             {this.state.info && <div className="state">{this.state.info}</div>}
 
-            {this.state.service && <>
+            {!this.state.editing ? <>
 
-                <div>Name: {this.state.service.name}</div>
-                <div>Type: {this.state.service.type}</div>
-                <div>Host: {this.state.service.host}</div>
-                <div>Disabled: {this.state.service.disabled ? "Yes" : "No"}</div>
+                <div>Name: {this.state.service?.name}</div>
+                <div>Type: {{ website: "Website", api: "API", gateway: "Gateway", minecraft: "Minecraft", server: "Server" }[this.state.service?.type]}</div>
+                <div>Host: {this.state.service?.host}</div>
+                <div>Disabled: {this.state.service?.disabled ? "Yes" : "No"}</div>
+
+                <div className="buttons"><button disabled={this.state.loading} onClick={() => this.setState({ editing: true })}>Edit</button></div>
+
+            </> : <>
+
+                <div className="input-field">
+                    <div>Name:</div>
+                    <input ref={this.nameInputRef} defaultValue={this.state.service.name} disabled={this.state.loading} autoFocus
+                        onKeyDown={(event) => event.key === "Enter" && this.hostInputRef.current.focus()} />
+                </div>
+                <div className="input-field">
+                    <div>Type:</div>
+                    <select ref={this.typeSelectRef} defaultValue={this.state.service.type} disabled={this.state.loading} >
+                        <option value="website">Website</option>
+                        <option value="api">API</option>
+                        <option value="gateway">Gateway</option>
+                        <option value="minecraft">Minecraft</option>
+                        <option value="server">Server</option>
+                    </select>
+                </div>
+                <div className="input-field">
+                    <div>Host:</div>
+                    <input ref={this.hostInputRef} defaultValue={this.state.service.host} disabled={this.state.loading}
+                        onKeyDown={(event) => event.key === "Enter" && editHandler()} />
+                </div>
+                <div className="input-field">
+                    <div>Disabled:</div>
+                    <input ref={this.disabledInputRef} type="checkbox" defaultChecked={this.state.service.disabled} disabled={this.state.loading} />
+                </div>
+
+                <div className="buttons">
+                    <button disabled={this.state.loading} onClick={editHandler}>Save</button>
+                    <button disabled={this.state.loading} onClick={() => this.setState({ editing: false })}>Cancel</button>
+                </div>
 
             </>}
 

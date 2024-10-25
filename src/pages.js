@@ -23,6 +23,8 @@ export default class Pages extends Component {
     render() {
         return <div>
 
+            <div className="title">Pages</div>
+
             {this.state.loading && <div className="state">Loading...</div>}
             {this.state.info && <div className="state">{this.state.info}</div>}
 

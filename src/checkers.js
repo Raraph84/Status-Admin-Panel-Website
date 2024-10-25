@@ -22,6 +22,8 @@ export default class Checkers extends Component {
     render() {
         return <div>
 
+            <div className="title">Checkers</div>
+
             {this.state.loading && <div className="state">Loading...</div>}
             {this.state.info && <div className="state">{this.state.info}</div>}
 

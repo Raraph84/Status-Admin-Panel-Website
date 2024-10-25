@@ -2,8 +2,6 @@ import { Component, createRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createService } from "./api";
 
-import "./styles/service.scss";
-
 class CreateService extends Component {
 
     constructor(props) {
@@ -28,29 +26,37 @@ class CreateService extends Component {
                 .catch((error) => this.setState({ loading: false, info: error }));
         };
 
-        return <div className="create-service-page">
+        return <div>
 
             <div className="title">Create service</div>
 
             {this.state.loading && <div className="state">Loading...</div>}
             {this.state.info && <div className="state">{this.state.info}</div>}
 
-            <div>Name:</div>
-            <input ref={this.nameInputRef} disabled={this.state.loading} onKeyDown={(event) => event.key === "Enter" && this.hostInputRef.current.focus()} />
-            <div>Type:</div>
-            <select ref={this.typeSelectRef} disabled={this.state.loading}>
-                <option value="website">Website</option>
-                <option value="api">API</option>
-                <option value="gateway">Gateway</option>
-                <option value="minecraft">Minecraft</option>
-                <option value="server">Server</option>
-            </select>
-            <div>Host:</div>
-            <input ref={this.hostInputRef} disabled={this.state.loading} onKeyDown={(event) => event.key === "Enter" && processCreateService()} />
-            <div>Disabled:</div>
-            <input ref={this.disabledInputRef} type="checkbox" disabled={this.state.loading} />
+            <div className="input-field">
+                <div>Name:</div>
+                <input ref={this.nameInputRef} disabled={this.state.loading} autoFocus onKeyDown={(event) => event.key === "Enter" && this.hostInputRef.current.focus()} />
+            </div>
+            <div className="input-field">
+                <div>Type:</div>
+                <select ref={this.typeSelectRef} disabled={this.state.loading}>
+                    <option value="website">Website</option>
+                    <option value="api">API</option>
+                    <option value="gateway">Gateway</option>
+                    <option value="minecraft">Minecraft</option>
+                    <option value="server">Server</option>
+                </select>
+            </div>
+            <div className="input-field">
+                <div>Host:</div>
+                <input ref={this.hostInputRef} disabled={this.state.loading} onKeyDown={(event) => event.key === "Enter" && processCreateService()} />
+            </div>
+            <div className="input-field">
+                <div>Disabled:</div>
+                <input ref={this.disabledInputRef} type="checkbox" disabled={this.state.loading} />
+            </div>
 
-            <div><button disabled={this.state.loading} onClick={processCreateService}>Create page</button></div>
+            <div className="buttons"><button disabled={this.state.loading} onClick={processCreateService}>Create page</button></div>
 
         </div>;
     }

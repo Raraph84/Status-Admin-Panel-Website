@@ -103,3 +103,16 @@ table {
         }
     }
 }
+
+.input-field input,
+.input-field select {
+    display: block;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+.buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
