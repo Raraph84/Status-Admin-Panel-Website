@@ -1,5 +1,11 @@
+@import "common.scss";
+
 .checker-page {
-    button {
-        margin: 5px;
+    table {
+        margin-top: 4px;
+    }
+
+    &>button {
+        margin: 8px 0;
     }
 }
