@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, createRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { getPage, getPageServices, updatePageService, removePageService, getServices, addPageService } from "./api";
@@ -11,7 +11,9 @@ class Page extends Component {
 
         super(props);
 
-        this.state = { loading: false, info: null, page: null, pageServices: null, addService: false, services: null };
+        this.displayNameInputRef = createRef();
+
+        this.state = { loading: false, info: null, page: null, pageServices: null, editService: null, addService: false, services: null };
     }
 
     componentDidMount() {
@@ -43,6 +45,33 @@ class Page extends Component {
                     .then((pageServices) => this.setState({ loading: false, pageServices }))
                     .catch((error) => this.setState({ loading: false, info: error }));
             }).catch((error) => this.setState({ loading: false, info: error }));
+        };
+
+        const toggleEditService = (pageService) => {
+
+            if (this.state.editService !== pageService.service.id) {
+                this.setState({ editService: pageService.service.id });
+                return;
+            }
+
+            const displayName = this.displayNameInputRef.current.value.trim() || null;
+
+            if (displayName === pageService.displayName) {
+                this.setState({ editService: null });
+                return;
+            }
+
+            this.setState({ loading: true, info: null });
+            updatePageService(this.state.page.id, pageService.service.id, { displayName: displayName }).then(() => {
+                this.setState({
+                    loading: false, editService: null,
+                    pageServices: this.state.pageServices.map((service) => service.service.id === pageService.service.id ? { ...service, displayName: displayName } : service)
+                });
+            }).catch((error) => {
+                this.setState({ loading: false, info: error }, () => {
+                    if (error === "Display name must be between 2 and 50 characters") this.displayNameInputRef.current.focus();
+                });
+            });
         };
 
         const toggleAddServices = () => {
@@ -122,12 +151,15 @@ class Page extends Component {
                     <DragDropContext onDragEnd={dragEndHandler}>
                         <Droppable droppableId="droppable">{(provided) => <tbody {...provided.droppableProps} ref={provided.innerRef}>
                             {this.state.pageServices?.sort((a, b) => a.position - b.position).map((service, index) =>
-                                <Draggable key={service.service.id} draggableId={service.service.id.toString()} index={index}>{(provided, snapshot) =>
+                                <Draggable key={service.service.id} isDragDisabled={this.state.loading} draggableId={service.service.id.toString()} index={index}>{(provided, snapshot) =>
                                     <tr ref={provided.innerRef} {...provided.draggableProps} className={snapshot.isDragging ? "dragging" : ""}>
                                         <td><Link to={"/services/" + service.service.id}>{service.service.name}</Link></td>
-                                        <td>{service.displayName ?? "N/A"}</td>
+                                        <td>{this.state.editService !== service.service.id ? service.displayName ?? "N/A"
+                                            : <input ref={this.displayNameInputRef} defaultValue={service.displayName ?? ""} disabled={this.state.loading} autoFocus
+                                                onKeyDown={(event) => event.key === "Enter" && toggleEditService(service)} />}</td>
                                         <td className="actions">
                                             <div {...provided.dragHandleProps}>Move</div>
+                                            <button disabled={this.state.loading} onClick={() => toggleEditService(service)}>Edit</button>
                                             <button disabled={this.state.loading} onClick={() => removeServiceHandler(service)}>Remove</button>
                                         </td>
                                     </tr>
