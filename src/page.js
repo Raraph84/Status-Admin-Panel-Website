@@ -27,9 +27,13 @@ class Page extends Component {
         ]).then(() => this.setState({ loading: false }));
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.params.pageId !== this.props.params.pageId) this.componentDidMount();
+    }
+
     render() {
 
-        const onDragEnd = (result) => {
+        const dragEndHandler = (result) => {
 
             if (!result.destination) return;
 
@@ -54,7 +58,7 @@ class Page extends Component {
                 .catch((error) => this.setState({ loading: false, info: error }));
         };
 
-        const processAddPageService = (service) => {
+        const addServiceHandler = (service) => {
             this.setState({ loading: true, info: null });
             addPageService(this.state.page.id, service.id).then(() => {
                 this.setState({
@@ -64,7 +68,7 @@ class Page extends Component {
             }).catch((error) => this.setState({ loading: false, info: error }));
         };
 
-        const processRemovePageService = (pageService) => {
+        const removeServiceHandler = (pageService) => {
             this.setState({ loading: true, info: null });
             removePageService(this.state.page.id, pageService.service.id).then(() => {
                 this.setState({
@@ -91,7 +95,18 @@ class Page extends Component {
                 <br />
 
                 <div>Sub pages:</div>
-                {this.state.page.subPages.map((subPage) => <div key={subPage.subPage.id}>- {subPage.subPage.title}</div>)}
+                {!!this.state.page.subPages.length && <table>
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.page.subPages.map((subPage) => <tr key={subPage.subPage.id}>
+                            <td><Link to={"/pages/" + subPage.subPage.id}>{subPage.subPage.title}</Link></td>
+                        </tr>)}
+                    </tbody>
+                </table>}
                 {!this.state.page.subPages.length && <div>No sub pages yet</div>}
                 <br />
 
@@ -104,7 +119,7 @@ class Page extends Component {
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <DragDropContext onDragEnd={onDragEnd}>
+                    <DragDropContext onDragEnd={dragEndHandler}>
                         <Droppable droppableId="droppable">{(provided) => <tbody {...provided.droppableProps} ref={provided.innerRef}>
                             {this.state.pageServices?.sort((a, b) => a.position - b.position).map((service, index) =>
                                 <Draggable key={service.service.id} draggableId={service.service.id.toString()} index={index}>{(provided, snapshot) =>
@@ -113,7 +128,7 @@ class Page extends Component {
                                         <td>{service.displayName ?? "N/A"}</td>
                                         <td className="actions">
                                             <div {...provided.dragHandleProps}>Move</div>
-                                            <button disabled={this.state.loading} onClick={() => processRemovePageService(service)}>Remove</button>
+                                            <button disabled={this.state.loading} onClick={() => removeServiceHandler(service)}>Remove</button>
                                         </td>
                                     </tr>
                                 }</Draggable>
@@ -135,13 +150,13 @@ class Page extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {nonAddedServices?.map((service) => <tr>
+                            {nonAddedServices?.map((service) => <tr key={service.id}>
                                 <td><Link to={"/services/" + service.id}>{service.name}</Link></td>
-                                <td><button disabled={this.state.loading} onClick={() => processAddPageService(service)}>Add</button></td>
+                                <td><button disabled={this.state.loading} onClick={() => addServiceHandler(service)}>Add</button></td>
                             </tr>)}
                         </tbody>
                     </table>}
-                    <div>{!nonAddedServices?.length && <div>No services not added</div>}</div>
+                    {!nonAddedServices?.length && <div>No services not added</div>}
                 </>}
 
             </>}

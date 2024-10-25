@@ -25,14 +25,14 @@ class Service extends Component {
             {this.state.loading && <div className="state">Loading...</div>}
             {this.state.info && <div className="state">{this.state.info}</div>}
 
-            {this.state.service && <div>
+            {this.state.service && <>
 
                 <div>Name: {this.state.service.name}</div>
                 <div>Type: {this.state.service.type}</div>
                 <div>Host: {this.state.service.host}</div>
                 <div>Disabled: {this.state.service.disabled ? "Yes" : "No"}</div>
 
-            </div>}
+            </>}
 
         </div>;
     }
