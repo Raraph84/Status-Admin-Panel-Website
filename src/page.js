@@ -144,6 +144,7 @@ class Page extends Component {
                 <thead>
                     <tr>
                         <th>Service</th>
+                        <th>Type</th>
                         <th>Display name</th>
                         <th>Actions</th>
                     </tr>
@@ -154,6 +155,7 @@ class Page extends Component {
                             <Draggable key={service.service.id} isDragDisabled={this.state.loading} draggableId={service.service.id.toString()} index={index}>{(provided, snapshot) =>
                                 <tr ref={provided.innerRef} {...provided.draggableProps} className={snapshot.isDragging ? "dragging" : ""}>
                                     <td><Link to={"/services/" + service.service.id}>{service.service.name}</Link></td>
+                                    <td>{{ website: "Website", api: "API", gateway: "Gateway", minecraft: "Minecraft", server: "Server" }[service.service.type]}</td>
                                     <td>{this.state.editService !== service.service.id ? service.displayName ?? "N/A"
                                         : <input ref={this.displayNameInputRef} defaultValue={service.displayName ?? ""} disabled={this.state.loading} autoFocus
                                             onKeyDown={(event) => event.key === "Enter" && toggleEditService(service)} />}</td>
@@ -178,12 +180,14 @@ class Page extends Component {
                     <thead>
                         <tr>
                             <th>Service</th>
+                            <th>Type</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {nonAddedServices?.map((service) => <tr key={service.id}>
                             <td><Link to={"/services/" + service.id}>{service.name}</Link></td>
+                            <td>{{ website: "Website", api: "API", gateway: "Gateway", minecraft: "Minecraft", server: "Server" }[service.type]}</td>
                             <td><button disabled={this.state.loading} onClick={() => addServiceHandler(service)}>Add</button></td>
                         </tr>)}
                     </tbody>

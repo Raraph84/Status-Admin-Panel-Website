@@ -76,12 +76,14 @@ class Checker extends Component {
                 <thead>
                     <tr>
                         <th>Service</th>
+                        <th>Type</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {this.state.checkerServices?.map((service) => <tr key={service.service.id}>
                         <td><Link to={"/services/" + service.service.id}>{service.service.name}</Link></td>
+                        <td>{{ website: "Website", api: "API", gateway: "Gateway", minecraft: "Minecraft", server: "Server" }[service.service.type]}</td>
                         <td><button disabled={this.state.loading} onClick={() => removeServiceHandler(service)}>Remove</button></td>
                     </tr>)}
                 </tbody>
@@ -95,12 +97,14 @@ class Checker extends Component {
                     <thead>
                         <tr>
                             <th>Service</th>
+                            <th>Type</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {nonAddedServices?.map((service) => <tr key={service.id}>
                             <td><Link to={"/services/" + service.id}>{service.name}</Link></td>
+                            <td>{{ website: "Website", api: "API", gateway: "Gateway", minecraft: "Minecraft", server: "Server" }[service.type]}</td>
                             <td><button disabled={this.state.loading} onClick={() => addServiceHandler(service)}>Add</button></td>
                         </tr>)}
                     </tbody>

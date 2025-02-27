@@ -56,7 +56,7 @@ class CreateService extends Component {
                 <input ref={this.disabledInputRef} type="checkbox" disabled={this.state.loading} />
             </div>
 
-            <div className="buttons"><button disabled={this.state.loading} onClick={processCreateService}>Create page</button></div>
+            <div className="buttons"><button disabled={this.state.loading} onClick={processCreateService}>Create service</button></div>
 
         </div>;
     }
