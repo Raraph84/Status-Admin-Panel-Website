@@ -1,4 +1,4 @@
-export const createService = (name, type, host, disabled) => postProp("/services", { name, type, host, disabled }, "id");
+export const createService = (name, type, host, protocol, disabled) => postProp("/services", { name, type, host, protocol, disabled }, "id");
 export const getServices = () => getProp("/services", "services");
 export const getService = (serviceId, includes = []) => get(withIncludes("/services/" + serviceId, includes));
 export const updateService = (serviceId, updates) => patchNoContent("/services/" + serviceId, updates);

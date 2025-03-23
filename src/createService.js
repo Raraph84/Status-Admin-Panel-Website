@@ -11,6 +11,7 @@ class CreateService extends Component {
         this.nameInputRef = createRef();
         this.typeSelectRef = createRef();
         this.hostInputRef = createRef();
+        this.protocolSelectRef = createRef();
         this.disabledInputRef = createRef();
 
         this.state = { loading: false, info: null };
@@ -21,7 +22,7 @@ class CreateService extends Component {
         const processCreateService = () => {
 
             this.setState({ loading: true, info: null });
-            createService(this.nameInputRef.current.value, this.typeSelectRef.current.value, this.hostInputRef.current.value, this.disabledInputRef.current.checked)
+            createService(this.nameInputRef.current.value, this.typeSelectRef.current.value, this.hostInputRef.current.value, parseInt(this.protocolSelectRef.current.value), this.disabledInputRef.current.checked)
                 .then((serviceId) => this.props.navigate("/services/" + serviceId))
                 .catch((error) => this.setState({ loading: false, info: error }));
         };
@@ -50,6 +51,14 @@ class CreateService extends Component {
             <div className="input-field">
                 <div>Host:</div>
                 <input ref={this.hostInputRef} disabled={this.state.loading} onKeyDown={(event) => event.key === "Enter" && processCreateService()} />
+            </div>
+            <div className="input-field">
+                <div>Protocol:</div>
+                <select ref={this.protocolSelectRef} defaultValue={4} disabled={this.state.loading} >
+                    <option value={0}>IPv6 or IPv4</option>
+                    <option value={4}>IPv4</option>
+                    <option value={6}>IPv6</option>
+                </select>
             </div>
             <div className="input-field">
                 <div>Disabled:</div>

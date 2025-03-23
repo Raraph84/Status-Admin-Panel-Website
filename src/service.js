@@ -11,6 +11,7 @@ class Service extends Component {
         this.nameInputRef = createRef();
         this.typeSelectRef = createRef();
         this.hostInputRef = createRef();
+        this.protocolSelectRef = createRef();
         this.disabledInputRef = createRef();
 
         this.state = { loading: false, info: null, service: null, editing: false };
@@ -32,6 +33,7 @@ class Service extends Component {
             if (this.nameInputRef.current.value.trim() !== this.state.service.name) updates.name = this.nameInputRef.current.value.trim();
             if (this.typeSelectRef.current.value !== this.state.service.type) updates.type = this.typeSelectRef.current.value;
             if (this.hostInputRef.current.value.trim() !== this.state.service.host) updates.host = this.hostInputRef.current.value.trim();
+            if (parseInt(this.protocolSelectRef.current.value) !== this.state.service.protocol) updates.protocol = parseInt(this.protocolSelectRef.current.value);
             if (this.disabledInputRef.current.checked !== this.state.service.disabled) updates.disabled = this.disabledInputRef.current.checked;
 
             if (!Object.keys(updates).length) {
@@ -57,6 +59,7 @@ class Service extends Component {
                 <div>Name: {this.state.service?.name}</div>
                 <div>Type: {{ website: "Website", api: "API", gateway: "Gateway", minecraft: "Minecraft", server: "Server" }[this.state.service?.type]}</div>
                 <div>Host: {this.state.service?.host}</div>
+                <div>Protocol: {{ 0: "IPv6 or IPv4", 4: "IPv4", 6: "IPv6" }[this.state.service?.protocol]}</div>
                 <div>Disabled: {this.state.service?.disabled ? "Yes" : "No"}</div>
 
                 <div className="buttons"><button disabled={this.state.loading} onClick={() => this.setState({ editing: true })}>Edit</button></div>
@@ -82,6 +85,14 @@ class Service extends Component {
                     <div>Host:</div>
                     <input ref={this.hostInputRef} defaultValue={this.state.service.host} disabled={this.state.loading}
                         onKeyDown={(event) => event.key === "Enter" && editHandler()} />
+                </div>
+                <div className="input-field">
+                    <div>Protocol:</div>
+                    <select ref={this.protocolSelectRef} defaultValue={this.state.service.protocol} disabled={this.state.loading} >
+                        <option value={0}>IPv6 or IPv4</option>
+                        <option value={4}>IPv4</option>
+                        <option value={6}>IPv6</option>
+                    </select>
                 </div>
                 <div className="input-field">
                     <div>Disabled:</div>
