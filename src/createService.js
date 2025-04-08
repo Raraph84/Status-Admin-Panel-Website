@@ -12,6 +12,7 @@ class CreateService extends Component {
         this.typeSelectRef = createRef();
         this.hostInputRef = createRef();
         this.protocolSelectRef = createRef();
+        this.alertInputRef = createRef();
         this.disabledInputRef = createRef();
 
         this.state = { loading: false, info: null };
@@ -22,7 +23,7 @@ class CreateService extends Component {
         const processCreateService = () => {
 
             this.setState({ loading: true, info: null });
-            createService(this.nameInputRef.current.value, this.typeSelectRef.current.value, this.hostInputRef.current.value, parseInt(this.protocolSelectRef.current.value), this.disabledInputRef.current.checked)
+            createService(this.nameInputRef.current.value, this.typeSelectRef.current.value, this.hostInputRef.current.value, parseInt(this.protocolSelectRef.current.value), this.alertInputRef.current.checked, this.disabledInputRef.current.checked)
                 .then((serviceId) => this.props.navigate("/services/" + serviceId))
                 .catch((error) => this.setState({ loading: false, info: error }));
         };
@@ -59,6 +60,10 @@ class CreateService extends Component {
                     <option value={4}>IPv4</option>
                     <option value={6}>IPv6</option>
                 </select>
+            </div>
+            <div className="input-field">
+                <div>Alert:</div>
+                <input ref={this.alertInputRef} type="checkbox" defaultChecked disabled={this.state.loading} />
             </div>
             <div className="input-field">
                 <div>Disabled:</div>
