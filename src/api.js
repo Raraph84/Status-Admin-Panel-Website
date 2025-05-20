@@ -19,13 +19,6 @@ export const removePageService = (pageId, serviceId) => deleteNoContent("/pages/
 export const getCheckers = () => getProp("/checkers", "checkers");
 export const getChecker = (checkerId, includes) => get(withIncludes("/checkers/" + checkerId, includes));
 
-export const getCheckerServices = (checkerId, includes) =>
-    getProp(withIncludes("/checkers/" + checkerId + "/services", includes), "services");
-export const addCheckerService = (checkerId, serviceId) =>
-    postNoContent("/checkers/" + checkerId + "/services/" + serviceId);
-export const removeCheckerService = (checkerId, serviceId) =>
-    deleteNoContent("/checkers/" + checkerId + "/services/" + serviceId);
-
 export const getGroups = (includes) => getProp(withIncludes("/groups", includes), "groups");
 export const getGroup = (groupId, includes) => get(withIncludes("/groups/" + groupId, includes));
 
