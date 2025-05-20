@@ -42,7 +42,7 @@ a {
 }
 
 button,
-input:not([type=checkbox]),
+input:not([type="checkbox"]),
 select {
     padding: 4px 6px;
     border: 1px solid black;
@@ -58,7 +58,7 @@ button {
 }
 
 .title {
-    font-size: 18px;
+    font-size: 22px;
     margin-bottom: 16px;
 }
 

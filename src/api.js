@@ -1,43 +1,67 @@
-export const createService = (name, type, host, protocol, alert, disabled) => postProp("/services", { name, type, host, protocol, alert, disabled }, "id");
+export const createService = (name, type, host, protocol, alert, disabled) =>
+    postProp("/services", { name, type, host, protocol, alert, disabled }, "id");
 export const getServices = () => getProp("/services", "services");
 export const getService = (serviceId, includes = []) => get(withIncludes("/services/" + serviceId, includes));
 export const updateService = (serviceId, updates) => patchNoContent("/services/" + serviceId, updates);
 
-export const createPage = (shortName, title, url, logoUrl, domain = null) => postProp("/pages", { shortName, title, url, logoUrl, domain }, "id");
+export const createPage = (shortName, title, url, logoUrl, domain = null) =>
+    postProp("/pages", { shortName, title, url, logoUrl, domain }, "id");
 export const getPages = () => getProp("/pages", "pages");
 export const getPage = (pageId, includes) => get(withIncludes("/pages/" + pageId, includes));
 
-export const getPageServices = (pageId, includes) => getProp(withIncludes("/pages/" + pageId + "/services", includes), "services");
+export const getPageServices = (pageId, includes) =>
+    getProp(withIncludes("/pages/" + pageId + "/services", includes), "services");
 export const addPageService = (pageId, serviceId) => postNoContent("/pages/" + pageId + "/services/" + serviceId);
-export const updatePageService = (pageId, serviceId, updates) => patchNoContent("/pages/" + pageId + "/services/" + serviceId, updates);
+export const updatePageService = (pageId, serviceId, updates) =>
+    patchNoContent("/pages/" + pageId + "/services/" + serviceId, updates);
 export const removePageService = (pageId, serviceId) => deleteNoContent("/pages/" + pageId + "/services/" + serviceId);
 
 export const getCheckers = () => getProp("/checkers", "checkers");
 export const getChecker = (checkerId, includes) => get(withIncludes("/checkers/" + checkerId, includes));
 
-export const getCheckerServices = (checkerId, includes) => getProp(withIncludes("/checkers/" + checkerId + "/services", includes), "services");
-export const addCheckerService = (checkerId, serviceId) => postNoContent("/checkers/" + checkerId + "/services/" + serviceId);
-export const removeCheckerService = (checkerId, serviceId) => deleteNoContent("/checkers/" + checkerId + "/services/" + serviceId);
+export const getCheckerServices = (checkerId, includes) =>
+    getProp(withIncludes("/checkers/" + checkerId + "/services", includes), "services");
+export const addCheckerService = (checkerId, serviceId) =>
+    postNoContent("/checkers/" + checkerId + "/services/" + serviceId);
+export const removeCheckerService = (checkerId, serviceId) =>
+    deleteNoContent("/checkers/" + checkerId + "/services/" + serviceId);
 
-const request = (url, method, body = null, auth = true) => new Promise((resolve, reject) => {
-    fetch(process.env.REACT_APP_API_HOST + url, {
-        method,
-        headers: {
-            ...(auth ? { "Authorization": process.env.REACT_APP_API_KEY } : {}),
-            ...(body ? { "Content-Type": "application/json" } : {})
-        },
-        ...(body ? { body: JSON.stringify(body) } : {})
-    }).then((res) => {
-        if (res.ok) resolve(res);
-        else res.json().then((res) => reject(res.message)).catch((error) => reject(error.toString()));
-    }).catch((error) => reject(error.toString()));
-});
+export const getGroups = (includes) => getProp(withIncludes("/groups", includes), "groups");
+export const getGroup = (groupId, includes) => get(withIncludes("/groups/" + groupId, includes));
 
-const requestJson = (...args) => new Promise((resolve, reject) => {
-    request(...args).then((res) => {
-        res.json().then((res) => { delete res.code; resolve(res); }).catch((error) => reject(error.toString()));
-    }).catch((error) => reject(error));
-});
+const request = (url, method, body = null, auth = true) =>
+    new Promise((resolve, reject) => {
+        fetch(process.env.REACT_APP_API_HOST + url, {
+            method,
+            headers: {
+                ...(auth ? { Authorization: process.env.REACT_APP_API_KEY } : {}),
+                ...(body ? { "Content-Type": "application/json" } : {})
+            },
+            ...(body ? { body: JSON.stringify(body) } : {})
+        })
+            .then((res) => {
+                if (res.ok) resolve(res);
+                else
+                    res.json()
+                        .then((res) => reject(res.message))
+                        .catch((error) => reject(error.toString()));
+            })
+            .catch((error) => reject(error.toString()));
+    });
+
+const requestJson = (...args) =>
+    new Promise((resolve, reject) => {
+        request(...args)
+            .then((res) => {
+                res.json()
+                    .then((res) => {
+                        delete res.code;
+                        resolve(res);
+                    })
+                    .catch((error) => reject(error.toString()));
+            })
+            .catch((error) => reject(error));
+    });
 
 const get = (url) => requestJson(url, "GET");
 const getProp = (url, name) => requestJson(url, "GET").then((res) => res[name]);
