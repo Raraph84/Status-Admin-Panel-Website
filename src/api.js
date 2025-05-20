@@ -29,6 +29,14 @@ export const removeCheckerService = (checkerId, serviceId) =>
 export const getGroups = (includes) => getProp(withIncludes("/groups", includes), "groups");
 export const getGroup = (groupId, includes) => get(withIncludes("/groups/" + groupId, includes));
 
+export const addGroupService = (groupId, serviceId) => postNoContent("/groups/" + groupId + "/services/" + serviceId);
+export const removeGroupService = (groupId, serviceId) =>
+    deleteNoContent("/groups/" + groupId + "/services/" + serviceId);
+
+export const addGroupChecker = (groupId, checkerId) => postNoContent("/groups/" + groupId + "/checkers/" + checkerId);
+export const removeGroupChecker = (groupId, checkerId) =>
+    deleteNoContent("/groups/" + groupId + "/checkers/" + checkerId);
+
 const request = (url, method, body = null, auth = true) =>
     new Promise((resolve, reject) => {
         fetch(process.env.REACT_APP_API_HOST + url, {

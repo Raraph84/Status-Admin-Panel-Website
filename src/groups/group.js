@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getGroup } from "../api";
+import { getGroup, removeGroupService, removeGroupChecker } from "../api";
 import { Link, useParams } from "react-router-dom";
 
 const Group = () => {
@@ -21,6 +21,40 @@ const Group = () => {
             });
     }, [groupId]);
 
+    const removeServiceHandler = (service) => {
+        setLoading(true);
+        setInfo(null);
+        removeGroupService(group.id, service.id)
+            .then(() => {
+                setGroup({
+                    ...group,
+                    services: group.services.filter((s) => s.service.id !== service.id)
+                });
+                setLoading(false);
+            })
+            .catch((error) => {
+                setInfo(error);
+                setLoading(false);
+            });
+    };
+
+    const removeCheckerHandler = (checker) => {
+        setLoading(true);
+        setInfo(null);
+        removeGroupChecker(group.id, checker.id)
+            .then(() => {
+                setGroup({
+                    ...group,
+                    checkers: group.checkers.filter((c) => c.checker.id !== checker.id)
+                });
+                setLoading(false);
+            })
+            .catch((error) => {
+                setInfo(error);
+                setLoading(false);
+            });
+    };
+
     return (
         <div>
             <div className="title">Group {group?.name}</div>
@@ -40,6 +74,7 @@ const Group = () => {
                                 <tr>
                                     <th>Service</th>
                                     <th>Type</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -57,12 +92,47 @@ const Group = () => {
                                                 server: "Server"
                                             }[service.type] || service.type}
                                         </td>
+                                        <td>
+                                            <button disabled={loading} onClick={() => removeServiceHandler(service)}>
+                                                Remove
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     ) : (
                         <div>No services yet</div>
+                    )}
+
+                    <br />
+
+                    <div>Checkers:</div>
+                    {group.checkers?.length ? (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Checker</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {group.checkers.map(({ checker }) => (
+                                    <tr key={checker.id}>
+                                        <td>
+                                            <Link to={"/checkers/" + checker.id}>{checker.name}</Link>
+                                        </td>
+                                        <td>
+                                            <button disabled={loading} onClick={() => removeCheckerHandler(checker)}>
+                                                Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <div>No checkers yet</div>
                     )}
                 </>
             )}
