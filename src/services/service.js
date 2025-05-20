@@ -1,6 +1,6 @@
 import { Component, createRef } from "react";
 import { useParams } from "react-router-dom";
-import { getService, updateService } from "./api";
+import { getService, updateService } from "../api";
 
 class Service extends Component {
 

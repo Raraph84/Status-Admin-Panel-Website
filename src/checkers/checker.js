@@ -1,8 +1,8 @@
 import { Component } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getChecker, getCheckerServices, removeCheckerService, getServices, addCheckerService } from "./api";
+import { getChecker, getCheckerServices, removeCheckerService, getServices, addCheckerService } from "../api";
 
-import "./styles/checker.scss";
+import "./checker.scss";
 
 class Checker extends Component {
 

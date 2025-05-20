@@ -1,9 +1,9 @@
 import { Component, createRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { getPage, getPageServices, updatePageService, removePageService, getServices, addPageService } from "./api";
+import { getPage, getPageServices, updatePageService, removePageService, getServices, addPageService } from "../api";
 
-import "./styles/page.scss";
+import "./page.scss";
 
 class Page extends Component {
 

@@ -1,6 +1,6 @@
 import { Component, createRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { createPage } from "./api";
+import { createPage } from "../api";
 
 class CreatePage extends Component {
 

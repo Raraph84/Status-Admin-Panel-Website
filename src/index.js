@@ -2,16 +2,16 @@ import { Component } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
-import Services from "./services";
-import CreateService from "./createService";
-import Service from "./service";
-import Pages from "./pages";
-import CreatePage from "./createPage";
-import Page from "./page";
-import Checkers from "./checkers";
-import Checker from "./checker";
+import CreateService from "./services/createService";
+import Services from "./services/services";
+import Service from "./services/service";
+import CreatePage from "./pages/createPage";
+import Pages from "./pages/pages";
+import Page from "./pages/page";
+import Checkers from "./checkers/checkers";
+import Checker from "./checkers/checker";
 
-import "./styles/common.scss";
+import "./common.scss";
 
 class App extends Component {
     render() {

@@ -1,6 +1,6 @@
 import { Component, createRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { createService } from "./api";
+import { createService } from "../api";
 
 class CreateService extends Component {
 

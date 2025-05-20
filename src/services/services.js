@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
-import { LinkedTr } from "./utils";
-import { getServices } from "./api";
+import { LinkedTr } from "../utils";
+import { getServices } from "../api";
 
 export default class Services extends Component {
 

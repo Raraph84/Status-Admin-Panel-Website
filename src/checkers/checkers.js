@@ -1,6 +1,6 @@
 import { Component } from "react";
-import { LinkedTr } from "./utils";
-import { getCheckers } from "./api";
+import { LinkedTr } from "../utils";
+import { getCheckers } from "../api";
 
 export default class Checkers extends Component {
 

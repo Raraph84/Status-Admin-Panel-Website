@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
-import { getPages } from "./api";
-import { LinkedTr } from "./utils";
+import { getPages } from "../api";
+import { LinkedTr } from "../utils";
 
 export default class Pages extends Component {
 
