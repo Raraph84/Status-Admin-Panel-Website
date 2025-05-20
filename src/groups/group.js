@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { getGroup, getServices, removeGroupService, removeGroupChecker, addGroupService } from "../api";
+import {
+    getGroup,
+    removeGroupService,
+    removeGroupChecker,
+    getServices,
+    addGroupService,
+    getCheckers,
+    addGroupChecker
+} from "../api";
 import { Link, useParams } from "react-router-dom";
 
 const Group = () => {
@@ -7,6 +15,7 @@ const Group = () => {
     const [info, setInfo] = useState(null);
     const [group, setGroup] = useState(null);
     const [services, setServices] = useState(null);
+    const [checkers, setCheckers] = useState(null);
     const { groupId } = useParams();
 
     useEffect(() => {
@@ -74,6 +83,24 @@ const Group = () => {
             });
     };
 
+    const toggleAddCheckers = () => {
+        if (checkers) {
+            setCheckers(null);
+            return;
+        }
+        setLoading(true);
+        setInfo(null);
+        getCheckers()
+            .then((checkers) => {
+                setLoading(false);
+                setCheckers(checkers);
+            })
+            .catch((error) => {
+                setLoading(false);
+                setInfo(error);
+            });
+    };
+
     const addServiceHandler = (service) => {
         setLoading(true);
         setInfo(null);
@@ -93,8 +120,31 @@ const Group = () => {
             });
     };
 
+    const addCheckerHandler = (checker) => {
+        setLoading(true);
+        setInfo(null);
+        addGroupChecker(group.id, checker.id)
+            .then(() => {
+                setGroup({
+                    ...group,
+                    checkers: group.checkers
+                        .concat({ group: group.id, checker })
+                        .sort((a, b) => a.checker.id - b.checker.id)
+                });
+                setLoading(false);
+            })
+            .catch((error) => {
+                setLoading(false);
+                setInfo(error);
+            });
+    };
+
     const nonAddedServices = services?.filter(
         (service) => !group?.services?.some((gs) => gs.service.id === service.id)
+    );
+
+    const nonAddedCheckers = checkers?.filter(
+        (checker) => !group?.checkers?.some((gc) => gc.checker.id === checker.id)
     );
 
     return (
@@ -180,6 +230,10 @@ const Group = () => {
                     <button disabled={loading} onClick={toggleAddServices}>
                         Add services
                     </button>
+                    <button disabled={loading} onClick={toggleAddCheckers}>
+                        Add checkers
+                    </button>
+
                     {services && (
                         <>
                             <div>Non added services:</div>
@@ -221,6 +275,41 @@ const Group = () => {
                                 </table>
                             ) : (
                                 <div>No services not added</div>
+                            )}
+                        </>
+                    )}
+
+                    {checkers && (
+                        <>
+                            <div>Non added checkers:</div>
+                            {nonAddedCheckers?.length ? (
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Checker</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {nonAddedCheckers.map((checker) => (
+                                            <tr key={checker.id}>
+                                                <td>
+                                                    <Link to={"/checkers/" + checker.id}>{checker.name}</Link>
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        disabled={loading}
+                                                        onClick={() => addCheckerHandler(checker)}
+                                                    >
+                                                        Add
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <div>No checkers not added</div>
                             )}
                         </>
                     )}
