@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { getGroup, removeGroupService, removeGroupChecker } from "../api";
+import { getGroup, getServices, removeGroupService, removeGroupChecker, addGroupService } from "../api";
 import { Link, useParams } from "react-router-dom";
 
 const Group = () => {
     const [loading, setLoading] = useState(false);
     const [info, setInfo] = useState(null);
     const [group, setGroup] = useState(null);
+    const [services, setServices] = useState(null);
     const { groupId } = useParams();
 
     useEffect(() => {
@@ -54,6 +55,47 @@ const Group = () => {
                 setLoading(false);
             });
     };
+
+    const toggleAddServices = () => {
+        if (services) {
+            setServices(null);
+            return;
+        }
+        setLoading(true);
+        setInfo(null);
+        getServices()
+            .then((services) => {
+                setLoading(false);
+                setServices(services);
+            })
+            .catch((error) => {
+                setLoading(false);
+                setInfo(error);
+            });
+    };
+
+    const addServiceHandler = (service) => {
+        setLoading(true);
+        setInfo(null);
+        addGroupService(group.id, service.id)
+            .then(() => {
+                setGroup({
+                    ...group,
+                    services: group.services
+                        .concat({ group: group.id, service })
+                        .sort((a, b) => a.service.id - b.service.id)
+                });
+                setLoading(false);
+            })
+            .catch((error) => {
+                setLoading(false);
+                setInfo(error);
+            });
+    };
+
+    const nonAddedServices = services?.filter(
+        (service) => !group?.services?.some((gs) => gs.service.id === service.id)
+    );
 
     return (
         <div>
@@ -104,7 +146,6 @@ const Group = () => {
                     ) : (
                         <div>No services yet</div>
                     )}
-
                     <br />
 
                     <div>Checkers:</div>
@@ -133,6 +174,55 @@ const Group = () => {
                         </table>
                     ) : (
                         <div>No checkers yet</div>
+                    )}
+                    <br />
+
+                    <button disabled={loading} onClick={toggleAddServices}>
+                        Add services
+                    </button>
+                    {services && (
+                        <>
+                            <div>Non added services:</div>
+                            {nonAddedServices?.length ? (
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Service</th>
+                                            <th>Type</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {nonAddedServices.map((service) => (
+                                            <tr key={service.id}>
+                                                <td>
+                                                    <Link to={"/services/" + service.id}>{service.name}</Link>
+                                                </td>
+                                                <td>
+                                                    {{
+                                                        website: "Website",
+                                                        api: "API",
+                                                        gateway: "Gateway",
+                                                        minecraft: "Minecraft",
+                                                        server: "Server"
+                                                    }[service.type] || service.type}
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        disabled={loading}
+                                                        onClick={() => addServiceHandler(service)}
+                                                    >
+                                                        Add
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <div>No services not added</div>
+                            )}
+                        </>
                     )}
                 </>
             )}

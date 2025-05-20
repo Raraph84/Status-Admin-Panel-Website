@@ -29,11 +29,11 @@ export const removeCheckerService = (checkerId, serviceId) =>
 export const getGroups = (includes) => getProp(withIncludes("/groups", includes), "groups");
 export const getGroup = (groupId, includes) => get(withIncludes("/groups/" + groupId, includes));
 
-export const addGroupService = (groupId, serviceId) => postNoContent("/groups/" + groupId + "/services/" + serviceId);
+export const addGroupService = (groupId, serviceId) => putNoContent("/groups/" + groupId + "/services/" + serviceId);
 export const removeGroupService = (groupId, serviceId) =>
     deleteNoContent("/groups/" + groupId + "/services/" + serviceId);
 
-export const addGroupChecker = (groupId, checkerId) => postNoContent("/groups/" + groupId + "/checkers/" + checkerId);
+export const addGroupChecker = (groupId, checkerId) => putNoContent("/groups/" + groupId + "/checkers/" + checkerId);
 export const removeGroupChecker = (groupId, checkerId) =>
     deleteNoContent("/groups/" + groupId + "/checkers/" + checkerId);
 
@@ -76,9 +76,8 @@ const getProp = (url, name) => requestJson(url, "GET").then((res) => res[name]);
 
 const postProp = (url, body, name) => requestJson(url, "POST", body).then((res) => res[name]);
 const postNoContent = (url, body) => request(url, "POST", body).then(() => undefined);
-
+const putNoContent = (url, body) => request(url, "PUT", body).then(() => undefined);
 const patchNoContent = (url, body) => request(url, "PATCH", body).then(() => undefined);
-
 const deleteNoContent = (url) => request(url, "DELETE").then(() => undefined);
 
 const withIncludes = (url, includes = []) => {
