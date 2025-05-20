@@ -204,6 +204,7 @@ const Group = () => {
                             <thead>
                                 <tr>
                                     <th>Checker</th>
+                                    <th>Location</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -213,6 +214,7 @@ const Group = () => {
                                         <td>
                                             <Link to={"/checkers/" + checker.id}>{checker.name}</Link>
                                         </td>
+                                        <td>{checker.location}</td>
                                         <td>
                                             <button disabled={loading} onClick={() => removeCheckerHandler(checker)}>
                                                 Remove
@@ -287,6 +289,7 @@ const Group = () => {
                                     <thead>
                                         <tr>
                                             <th>Checker</th>
+                                            <th>Location</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -296,6 +299,7 @@ const Group = () => {
                                                 <td>
                                                     <Link to={"/checkers/" + checker.id}>{checker.name}</Link>
                                                 </td>
+                                                <td>{checker.location}</td>
                                                 <td>
                                                     <button
                                                         disabled={loading}
