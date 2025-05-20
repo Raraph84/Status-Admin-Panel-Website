@@ -68,7 +68,6 @@ class Checker extends Component {
             <div>Description: {this.state.checker?.description}</div>
             <div>Location: {this.state.checker?.location}</div>
             <div>Check second: {this.state.checker?.checkSecond}</div>
-            <div>Hidden: {this.state.checker?.hidden ? "Yes" : "No"}</div>
             <br />
 
             <div>Services:</div>

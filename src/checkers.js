@@ -33,7 +33,6 @@ export default class Checkers extends Component {
                         <th>Name</th>
                         <th>Location</th>
                         <th>Description</th>
-                        <th>Hidden</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,7 +40,6 @@ export default class Checkers extends Component {
                         <td>{checker.name}</td>
                         <td>{checker.location}</td>
                         <td>{checker.description}</td>
-                        <td>{checker.hidden ? "Yes" : "No"}</td>
                     </LinkedTr>)}
                 </tbody>
             </table>}
