@@ -8,6 +8,7 @@ export const createPage = (shortName, title, url, logoUrl, domain = null) =>
     postProp("/pages", { shortName, title, url, logoUrl, domain }, "id");
 export const getPages = () => getProp("/pages", "pages");
 export const getPage = (pageId, includes) => get(withIncludes("/pages/" + pageId, includes));
+export const updatePage = (pageId, updates) => patchNoContent("/pages/" + pageId, updates);
 
 export const getPageServices = (pageId, includes) =>
     getProp(withIncludes("/pages/" + pageId + "/services", includes), "services");

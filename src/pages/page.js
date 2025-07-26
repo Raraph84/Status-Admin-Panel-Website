@@ -1,7 +1,7 @@
 import { Component, createRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { getPage, getPageServices, updatePageService, removePageService, getServices, addPageService } from "../api";
+import { getPage, getPageServices, updatePageService, removePageService, getServices, addPageService, updatePage } from "../api";
 
 import "./page.scss";
 
@@ -13,7 +13,13 @@ class Page extends Component {
 
         this.displayNameInputRef = createRef();
 
-        this.state = { loading: false, info: null, page: null, pageServices: null, editService: null, addService: false, services: null };
+        this.shortNameInputRef = createRef();
+        this.titleInputRef = createRef();
+        this.urlInputRef = createRef();
+        this.logoUrlInputRef = createRef();
+        this.domainInputRef = createRef();
+
+        this.state = { loading: false, info: null, page: null, pageServices: null, editService: null, addService: false, services: null, editing: false };
     }
 
     componentDidMount() {
@@ -34,6 +40,26 @@ class Page extends Component {
     }
 
     render() {
+
+        const handlePageUpdate = () => {
+
+            const updates = {};
+            if (this.shortNameInputRef.current.value.trim() !== this.state.page.shortName) updates.shortName = this.shortNameInputRef.current.value.trim();
+            if (this.titleInputRef.current.value.trim() !== this.state.page.title) updates.title = this.titleInputRef.current.value.trim();
+            if (this.urlInputRef.current.value.trim() !== this.state.page.url) updates.url = this.urlInputRef.current.value.trim();
+            if (this.logoUrlInputRef.current.value.trim() !== this.state.page.logoUrl) updates.logoUrl = this.logoUrlInputRef.current.value.trim();
+            if ((this.domainInputRef.current.value.trim() || null) !== this.state.page.domain) updates.domain = this.domainInputRef.current.value.trim() || null;
+
+            if (!Object.keys(updates).length) {
+                this.setState({ editing: false });
+                return;
+            }
+
+            this.setState({ loading: true, info: null });
+            updatePage(this.state.page.id, updates)
+                .then(() => this.setState({ loading: false, editing: false, page: { ...this.state.page, ...updates } }))
+                .catch((error) => this.setState({ loading: false, info: error }));
+        };
 
         const dragEndHandler = (result) => {
 
@@ -116,11 +142,50 @@ class Page extends Component {
             {this.state.loading && <div className="state">Loading...</div>}
             {this.state.info && <div className="state">{this.state.info}</div>}
 
-            <div>Short name: {this.state.page?.shortName}</div>
-            <div>Title: {this.state.page?.title}</div>
-            <div>URL: <a href={this.state.page?.url} target="_blank" rel="noreferrer">{this.state.page?.url}</a></div>
-            <div>Logo URL: <a href={this.state.page?.logoUrl} target="_blank" rel="noreferrer">{this.state.page?.logoUrl}</a></div>
-            <div>Domain: {this.state.page?.domain ? <a href={"https://" + this.state.page.domain} target="_blank" rel="noreferrer">{this.state.page.domain}</a> : "N/A"}</div>
+            {!this.state.editing ? <>
+
+                <div>Short name: {this.state.page?.shortName}</div>
+                <div>Title: {this.state.page?.title}</div>
+                <div>URL: <a href={this.state.page?.url} target="_blank" rel="noreferrer">{this.state.page?.url}</a></div>
+                <div>Logo URL: <a href={this.state.page?.logoUrl} target="_blank" rel="noreferrer">{this.state.page?.logoUrl}</a></div>
+                <div>Domain: {this.state.page?.domain ? <a href={"https://" + this.state.page.domain} target="_blank" rel="noreferrer">{this.state.page.domain}</a> : "N/A"}</div>
+
+                <div className="buttons"><button disabled={this.state.loading} onClick={() => this.setState({ editing: true })}>Edit Page</button></div>
+
+            </> : <>
+
+                <div className="input-field">
+                    <div>Short name:</div>
+                    <input ref={this.shortNameInputRef} defaultValue={this.state.page.shortName} disabled={this.state.loading} autoFocus
+                        onKeyDown={(event) => event.key === "Enter" && this.titleInputRef.current.focus()} />
+                </div>
+                <div className="input-field">
+                    <div>Title:</div>
+                    <input ref={this.titleInputRef} defaultValue={this.state.page.title} disabled={this.state.loading}
+                        onKeyDown={(event) => event.key === "Enter" && this.urlInputRef.current.focus()} />
+                </div>
+                <div className="input-field">
+                    <div>URL:</div>
+                    <input ref={this.urlInputRef} defaultValue={this.state.page.url} disabled={this.state.loading}
+                        onKeyDown={(event) => event.key === "Enter" && this.logoUrlInputRef.current.focus()} />
+                </div>
+                <div className="input-field">
+                    <div>Logo URL:</div>
+                    <input ref={this.logoUrlInputRef} defaultValue={this.state.page.logoUrl} disabled={this.state.loading}
+                        onKeyDown={(event) => event.key === "Enter" && this.domainInputRef.current.focus()} />
+                </div>
+                <div className="input-field">
+                    <div>Domain:</div>
+                    <input ref={this.domainInputRef} defaultValue={this.state.page.domain || ""} disabled={this.state.loading}
+                        onKeyDown={(event) => event.key === "Enter" && handlePageUpdate()} />
+                </div>
+
+                <div className="buttons">
+                    <button disabled={this.state.loading} onClick={handlePageUpdate}>Save</button>
+                    <button disabled={this.state.loading} onClick={() => this.setState({ editing: false })}>Cancel</button>
+                </div>
+
+            </>}
             <br />
 
             <div>Sub pages:</div>
