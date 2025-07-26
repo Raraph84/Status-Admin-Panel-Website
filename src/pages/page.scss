@@ -14,12 +14,12 @@
             gap: 4px;
 
             div {
-                @extend button
+                @extend button;
             }
         }
     }
 
-    &>button {
+    & > button {
         margin: 8px 0;
     }
 }

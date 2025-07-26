@@ -1,14 +1,20 @@
 import { Component, createRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { getPage, getPageServices, updatePageService, removePageService, getServices, addPageService, updatePage } from "../api";
+import {
+    getPage,
+    getPageServices,
+    updatePageService,
+    removePageService,
+    getServices,
+    addPageService,
+    updatePage
+} from "../api";
 
 import "./page.scss";
 
 class Page extends Component {
-
     constructor(props) {
-
         super(props);
 
         this.displayNameInputRef = createRef();
@@ -19,11 +25,19 @@ class Page extends Component {
         this.logoUrlInputRef = createRef();
         this.domainInputRef = createRef();
 
-        this.state = { loading: false, info: null, page: null, pageServices: null, editService: null, addService: false, services: null, editing: false };
+        this.state = {
+            loading: false,
+            info: null,
+            page: null,
+            pageServices: null,
+            editService: null,
+            addService: false,
+            services: null,
+            editing: false
+        };
     }
 
     componentDidMount() {
-
         this.setState({ loading: true });
         Promise.all([
             getPage(this.props.params.pageId, ["subPages", "subPages.subPage"])
@@ -40,15 +54,18 @@ class Page extends Component {
     }
 
     render() {
-
         const handlePageUpdate = () => {
-
             const updates = {};
-            if (this.shortNameInputRef.current.value.trim() !== this.state.page.shortName) updates.shortName = this.shortNameInputRef.current.value.trim();
-            if (this.titleInputRef.current.value.trim() !== this.state.page.title) updates.title = this.titleInputRef.current.value.trim();
-            if (this.urlInputRef.current.value.trim() !== this.state.page.url) updates.url = this.urlInputRef.current.value.trim();
-            if (this.logoUrlInputRef.current.value.trim() !== this.state.page.logoUrl) updates.logoUrl = this.logoUrlInputRef.current.value.trim();
-            if ((this.domainInputRef.current.value.trim() || null) !== this.state.page.domain) updates.domain = this.domainInputRef.current.value.trim() || null;
+            if (this.shortNameInputRef.current.value.trim() !== this.state.page.shortName)
+                updates.shortName = this.shortNameInputRef.current.value.trim();
+            if (this.titleInputRef.current.value.trim() !== this.state.page.title)
+                updates.title = this.titleInputRef.current.value.trim();
+            if (this.urlInputRef.current.value.trim() !== this.state.page.url)
+                updates.url = this.urlInputRef.current.value.trim();
+            if (this.logoUrlInputRef.current.value.trim() !== this.state.page.logoUrl)
+                updates.logoUrl = this.logoUrlInputRef.current.value.trim();
+            if ((this.domainInputRef.current.value.trim() || null) !== this.state.page.domain)
+                updates.domain = this.domainInputRef.current.value.trim() || null;
 
             if (!Object.keys(updates).length) {
                 this.setState({ editing: false });
@@ -62,19 +79,19 @@ class Page extends Component {
         };
 
         const dragEndHandler = (result) => {
-
             if (!result.destination) return;
 
             this.setState({ loading: true, info: null });
-            updatePageService(this.state.page.id, result.draggableId, { position: result.destination.index + 1 }).then(() => {
-                getPageServices(this.props.params.pageId, ["service"])
-                    .then((pageServices) => this.setState({ loading: false, pageServices }))
-                    .catch((error) => this.setState({ loading: false, info: error }));
-            }).catch((error) => this.setState({ loading: false, info: error }));
+            updatePageService(this.state.page.id, result.draggableId, { position: result.destination.index + 1 })
+                .then(() => {
+                    getPageServices(this.props.params.pageId, ["service"])
+                        .then((pageServices) => this.setState({ loading: false, pageServices }))
+                        .catch((error) => this.setState({ loading: false, info: error }));
+                })
+                .catch((error) => this.setState({ loading: false, info: error }));
         };
 
         const toggleEditService = (pageService) => {
-
             if (this.state.editService !== pageService.service.id) {
                 this.setState({ editService: pageService.service.id });
                 return;
@@ -88,20 +105,27 @@ class Page extends Component {
             }
 
             this.setState({ loading: true, info: null });
-            updatePageService(this.state.page.id, pageService.service.id, { displayName }).then(() => {
-                this.setState({
-                    loading: false, editService: null,
-                    pageServices: this.state.pageServices.map((service) => service.service.id === pageService.service.id ? { ...service, displayName: displayName } : service)
+            updatePageService(this.state.page.id, pageService.service.id, { displayName })
+                .then(() => {
+                    this.setState({
+                        loading: false,
+                        editService: null,
+                        pageServices: this.state.pageServices.map((service) =>
+                            service.service.id === pageService.service.id
+                                ? { ...service, displayName: displayName }
+                                : service
+                        )
+                    });
+                })
+                .catch((error) => {
+                    this.setState({ loading: false, info: error }, () => {
+                        if (error === "Display name must be between 2 and 50 characters")
+                            this.displayNameInputRef.current.focus();
+                    });
                 });
-            }).catch((error) => {
-                this.setState({ loading: false, info: error }, () => {
-                    if (error === "Display name must be between 2 and 50 characters") this.displayNameInputRef.current.focus();
-                });
-            });
         };
 
         const toggleAddServices = () => {
-
             if (this.state.addService) {
                 this.setState({ addService: !this.state.addService, services: null });
                 return;
@@ -115,152 +139,308 @@ class Page extends Component {
 
         const addServiceHandler = (service) => {
             this.setState({ loading: true, info: null });
-            addPageService(this.state.page.id, service.id).then(() => {
-                this.setState({
-                    loading: false,
-                    pageServices: this.state.pageServices.concat({ page: this.state.page.id, service, position: this.state.pageServices.length + 1, displayName: null }).sort((a, b) => a.service.id - b.service.id)
-                });
-            }).catch((error) => this.setState({ loading: false, info: error }));
+            addPageService(this.state.page.id, service.id)
+                .then(() => {
+                    this.setState({
+                        loading: false,
+                        pageServices: this.state.pageServices
+                            .concat({
+                                page: this.state.page.id,
+                                service,
+                                position: this.state.pageServices.length + 1,
+                                displayName: null
+                            })
+                            .sort((a, b) => a.service.id - b.service.id)
+                    });
+                })
+                .catch((error) => this.setState({ loading: false, info: error }));
         };
 
         const removeServiceHandler = (pageService) => {
             this.setState({ loading: true, info: null });
-            removePageService(this.state.page.id, pageService.service.id).then(() => {
-                this.setState({
-                    loading: false,
-                    pageServices: this.state.pageServices.filter((service) => service.service.id !== pageService.service.id).map((service) => ({ ...service, position: service.position > pageService.position ? service.position - 1 : service.position }))
-                });
-            }).catch((error) => this.setState({ loading: false, info: error }));
+            removePageService(this.state.page.id, pageService.service.id)
+                .then(() => {
+                    this.setState({
+                        loading: false,
+                        pageServices: this.state.pageServices
+                            .filter((service) => service.service.id !== pageService.service.id)
+                            .map((service) => ({
+                                ...service,
+                                position:
+                                    service.position > pageService.position ? service.position - 1 : service.position
+                            }))
+                    });
+                })
+                .catch((error) => this.setState({ loading: false, info: error }));
         };
 
-        const nonAddedServices = this.state.services?.filter((service) => !this.state.pageServices?.some((pageService) => pageService.service.id === service.id));
+        const nonAddedServices = this.state.services?.filter(
+            (service) => !this.state.pageServices?.some((pageService) => pageService.service.id === service.id)
+        );
 
-        return <div className="page-page">
+        return (
+            <div className="page-page">
+                <div className="title">Page</div>
 
-            <div className="title">Page</div>
+                {this.state.loading && <div className="state">Loading...</div>}
+                {this.state.info && <div className="state">{this.state.info}</div>}
 
-            {this.state.loading && <div className="state">Loading...</div>}
-            {this.state.info && <div className="state">{this.state.info}</div>}
+                {!this.state.editing ? (
+                    <>
+                        <div>Short name: {this.state.page?.shortName}</div>
+                        <div>Title: {this.state.page?.title}</div>
+                        <div>
+                            URL:{" "}
+                            <a href={this.state.page?.url} target="_blank" rel="noreferrer">
+                                {this.state.page?.url}
+                            </a>
+                        </div>
+                        <div>
+                            Logo URL:{" "}
+                            <a href={this.state.page?.logoUrl} target="_blank" rel="noreferrer">
+                                {this.state.page?.logoUrl}
+                            </a>
+                        </div>
+                        <div>
+                            Domain:{" "}
+                            {this.state.page?.domain ? (
+                                <a href={"https://" + this.state.page.domain} target="_blank" rel="noreferrer">
+                                    {this.state.page.domain}
+                                </a>
+                            ) : (
+                                "N/A"
+                            )}
+                        </div>
 
-            {!this.state.editing ? <>
+                        <div className="buttons">
+                            <button disabled={this.state.loading} onClick={() => this.setState({ editing: true })}>
+                                Edit
+                            </button>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="input-field">
+                            <div>Short name:</div>
+                            <input
+                                ref={this.shortNameInputRef}
+                                defaultValue={this.state.page.shortName}
+                                disabled={this.state.loading}
+                                autoFocus
+                                onKeyDown={(event) => event.key === "Enter" && this.titleInputRef.current.focus()}
+                            />
+                        </div>
+                        <div className="input-field">
+                            <div>Title:</div>
+                            <input
+                                ref={this.titleInputRef}
+                                defaultValue={this.state.page.title}
+                                disabled={this.state.loading}
+                                onKeyDown={(event) => event.key === "Enter" && this.urlInputRef.current.focus()}
+                            />
+                        </div>
+                        <div className="input-field">
+                            <div>URL:</div>
+                            <input
+                                ref={this.urlInputRef}
+                                defaultValue={this.state.page.url}
+                                disabled={this.state.loading}
+                                onKeyDown={(event) => event.key === "Enter" && this.logoUrlInputRef.current.focus()}
+                            />
+                        </div>
+                        <div className="input-field">
+                            <div>Logo URL:</div>
+                            <input
+                                ref={this.logoUrlInputRef}
+                                defaultValue={this.state.page.logoUrl}
+                                disabled={this.state.loading}
+                                onKeyDown={(event) => event.key === "Enter" && this.domainInputRef.current.focus()}
+                            />
+                        </div>
+                        <div className="input-field">
+                            <div>Domain:</div>
+                            <input
+                                ref={this.domainInputRef}
+                                defaultValue={this.state.page.domain || ""}
+                                disabled={this.state.loading}
+                                onKeyDown={(event) => event.key === "Enter" && handlePageUpdate()}
+                            />
+                        </div>
 
-                <div>Short name: {this.state.page?.shortName}</div>
-                <div>Title: {this.state.page?.title}</div>
-                <div>URL: <a href={this.state.page?.url} target="_blank" rel="noreferrer">{this.state.page?.url}</a></div>
-                <div>Logo URL: <a href={this.state.page?.logoUrl} target="_blank" rel="noreferrer">{this.state.page?.logoUrl}</a></div>
-                <div>Domain: {this.state.page?.domain ? <a href={"https://" + this.state.page.domain} target="_blank" rel="noreferrer">{this.state.page.domain}</a> : "N/A"}</div>
+                        <div className="buttons">
+                            <button disabled={this.state.loading} onClick={handlePageUpdate}>
+                                Save
+                            </button>
+                            <button disabled={this.state.loading} onClick={() => this.setState({ editing: false })}>
+                                Cancel
+                            </button>
+                        </div>
+                    </>
+                )}
+                <br />
 
-                <div className="buttons"><button disabled={this.state.loading} onClick={() => this.setState({ editing: true })}>Edit</button></div>
-
-            </> : <>
-
-                <div className="input-field">
-                    <div>Short name:</div>
-                    <input ref={this.shortNameInputRef} defaultValue={this.state.page.shortName} disabled={this.state.loading} autoFocus
-                        onKeyDown={(event) => event.key === "Enter" && this.titleInputRef.current.focus()} />
-                </div>
-                <div className="input-field">
-                    <div>Title:</div>
-                    <input ref={this.titleInputRef} defaultValue={this.state.page.title} disabled={this.state.loading}
-                        onKeyDown={(event) => event.key === "Enter" && this.urlInputRef.current.focus()} />
-                </div>
-                <div className="input-field">
-                    <div>URL:</div>
-                    <input ref={this.urlInputRef} defaultValue={this.state.page.url} disabled={this.state.loading}
-                        onKeyDown={(event) => event.key === "Enter" && this.logoUrlInputRef.current.focus()} />
-                </div>
-                <div className="input-field">
-                    <div>Logo URL:</div>
-                    <input ref={this.logoUrlInputRef} defaultValue={this.state.page.logoUrl} disabled={this.state.loading}
-                        onKeyDown={(event) => event.key === "Enter" && this.domainInputRef.current.focus()} />
-                </div>
-                <div className="input-field">
-                    <div>Domain:</div>
-                    <input ref={this.domainInputRef} defaultValue={this.state.page.domain || ""} disabled={this.state.loading}
-                        onKeyDown={(event) => event.key === "Enter" && handlePageUpdate()} />
-                </div>
-
-                <div className="buttons">
-                    <button disabled={this.state.loading} onClick={handlePageUpdate}>Save</button>
-                    <button disabled={this.state.loading} onClick={() => this.setState({ editing: false })}>Cancel</button>
-                </div>
-
-            </>}
-            <br />
-
-            <div>Sub pages:</div>
-            {!!this.state.page?.subPages.length && <table>
-                <thead>
-                    <tr>
-                        <th>Service</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.state.page.subPages.map((subPage) => <tr key={subPage.subPage.id}>
-                        <td><Link to={"/pages/" + subPage.subPage.id}>{subPage.subPage.title}</Link></td>
-                    </tr>)}
-                </tbody>
-            </table>}
-            {!this.state.page?.subPages.length && <div>No sub pages yet</div>}
-            <br />
-
-            <div>Services:</div>
-            {!!this.state.pageServices?.length && <table>
-                <thead>
-                    <tr>
-                        <th>Service</th>
-                        <th>Type</th>
-                        <th>Display name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <DragDropContext onDragEnd={dragEndHandler}>
-                    <Droppable droppableId="droppable">{(provided) => <tbody {...provided.droppableProps} ref={provided.innerRef}>
-                        {this.state.pageServices?.sort((a, b) => a.position - b.position).map((service, index) =>
-                            <Draggable key={service.service.id} isDragDisabled={this.state.loading} draggableId={service.service.id.toString()} index={index}>{(provided, snapshot) =>
-                                <tr ref={provided.innerRef} {...provided.draggableProps} className={snapshot.isDragging ? "dragging" : ""}>
-                                    <td><Link to={"/services/" + service.service.id}>{service.service.name}</Link></td>
-                                    <td>{{ website: "Website", api: "API", gateway: "Gateway", minecraft: "Minecraft", server: "Server" }[service.service.type]}</td>
-                                    <td>{this.state.editService !== service.service.id ? service.displayName ?? "N/A"
-                                        : <input ref={this.displayNameInputRef} defaultValue={service.displayName ?? ""} disabled={this.state.loading} autoFocus
-                                            onKeyDown={(event) => event.key === "Enter" && toggleEditService(service)} />}</td>
-                                    <td className="actions">
-                                        <div {...provided.dragHandleProps}>Move</div>
-                                        <button disabled={this.state.loading} onClick={() => toggleEditService(service)}>Edit</button>
-                                        <button disabled={this.state.loading} onClick={() => removeServiceHandler(service)}>Remove</button>
+                <div>Sub pages:</div>
+                {!!this.state.page?.subPages.length && (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.page.subPages.map((subPage) => (
+                                <tr key={subPage.subPage.id}>
+                                    <td>
+                                        <Link to={"/pages/" + subPage.subPage.id}>{subPage.subPage.title}</Link>
                                     </td>
                                 </tr>
-                            }</Draggable>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+                {!this.state.page?.subPages.length && <div>No sub pages yet</div>}
+                <br />
+
+                <div>Services:</div>
+                {!!this.state.pageServices?.length && (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Type</th>
+                                <th>Display name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <DragDropContext onDragEnd={dragEndHandler}>
+                            <Droppable droppableId="droppable">
+                                {(provided) => (
+                                    <tbody {...provided.droppableProps} ref={provided.innerRef}>
+                                        {this.state.pageServices
+                                            ?.sort((a, b) => a.position - b.position)
+                                            .map((service, index) => (
+                                                <Draggable
+                                                    key={service.service.id}
+                                                    isDragDisabled={this.state.loading}
+                                                    draggableId={service.service.id.toString()}
+                                                    index={index}
+                                                >
+                                                    {(provided, snapshot) => (
+                                                        <tr
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            className={snapshot.isDragging ? "dragging" : ""}
+                                                        >
+                                                            <td>
+                                                                <Link to={"/services/" + service.service.id}>
+                                                                    {service.service.name}
+                                                                </Link>
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    {
+                                                                        website: "Website",
+                                                                        api: "API",
+                                                                        gateway: "Gateway",
+                                                                        minecraft: "Minecraft",
+                                                                        server: "Server"
+                                                                    }[service.service.type]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {this.state.editService !== service.service.id ? (
+                                                                    (service.displayName ?? "N/A")
+                                                                ) : (
+                                                                    <input
+                                                                        ref={this.displayNameInputRef}
+                                                                        defaultValue={service.displayName ?? ""}
+                                                                        disabled={this.state.loading}
+                                                                        autoFocus
+                                                                        onKeyDown={(event) =>
+                                                                            event.key === "Enter" &&
+                                                                            toggleEditService(service)
+                                                                        }
+                                                                    />
+                                                                )}
+                                                            </td>
+                                                            <td className="actions">
+                                                                <div {...provided.dragHandleProps}>Move</div>
+                                                                <button
+                                                                    disabled={this.state.loading}
+                                                                    onClick={() => toggleEditService(service)}
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                                <button
+                                                                    disabled={this.state.loading}
+                                                                    onClick={() => removeServiceHandler(service)}
+                                                                >
+                                                                    Remove
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </Draggable>
+                                            ))}
+                                        {provided.placeholder}
+                                    </tbody>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                    </table>
+                )}
+                {!this.state.pageServices?.length && <div>No services yet</div>}
+
+                <button disabled={this.state.loading} onClick={toggleAddServices}>
+                    Add services
+                </button>
+                {this.state.addService && (
+                    <>
+                        <div>Non added services:</div>
+                        {!!nonAddedServices?.length && (
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Service</th>
+                                        <th>Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {nonAddedServices?.map((service) => (
+                                        <tr key={service.id}>
+                                            <td>
+                                                <Link to={"/services/" + service.id}>{service.name}</Link>
+                                            </td>
+                                            <td>
+                                                {
+                                                    {
+                                                        website: "Website",
+                                                        api: "API",
+                                                        gateway: "Gateway",
+                                                        minecraft: "Minecraft",
+                                                        server: "Server"
+                                                    }[service.type]
+                                                }
+                                            </td>
+                                            <td>
+                                                <button
+                                                    disabled={this.state.loading}
+                                                    onClick={() => addServiceHandler(service)}
+                                                >
+                                                    Add
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         )}
-                        {provided.placeholder}
-                    </tbody>}</Droppable>
-                </DragDropContext>
-            </table>}
-            {!this.state.pageServices?.length && <div>No services yet</div>}
-
-            <button disabled={this.state.loading} onClick={toggleAddServices}>Add services</button>
-            {this.state.addService && <>
-                <div>Non added services:</div>
-                {!!nonAddedServices?.length && <table>
-                    <thead>
-                        <tr>
-                            <th>Service</th>
-                            <th>Type</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {nonAddedServices?.map((service) => <tr key={service.id}>
-                            <td><Link to={"/services/" + service.id}>{service.name}</Link></td>
-                            <td>{{ website: "Website", api: "API", gateway: "Gateway", minecraft: "Minecraft", server: "Server" }[service.type]}</td>
-                            <td><button disabled={this.state.loading} onClick={() => addServiceHandler(service)}>Add</button></td>
-                        </tr>)}
-                    </tbody>
-                </table>}
-                {!nonAddedServices?.length && <div>No services not added</div>}
-            </>}
-
-        </div>;
+                        {!nonAddedServices?.length && <div>No services not added</div>}
+                    </>
+                )}
+            </div>
+        );
     }
 }
 
