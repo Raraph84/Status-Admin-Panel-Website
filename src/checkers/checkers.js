@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { Link } from "react-router-dom";
 import { LinkedTr } from "../utils";
 import { getCheckers } from "../api";
 
@@ -26,6 +27,9 @@ export default class Checkers extends Component {
 
             {this.state.loading && <div className="state">Loading...</div>}
             {this.state.info && <div className="state">{this.state.info}</div>}
+
+            <div><Link to="/checkers/create">Create checker</Link></div>
+            <br />
 
             {this.state.checkers && <table>
                 <thead>

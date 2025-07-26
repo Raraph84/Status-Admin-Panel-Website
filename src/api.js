@@ -16,6 +16,8 @@ export const updatePageService = (pageId, serviceId, updates) =>
     patchNoContent("/pages/" + pageId + "/services/" + serviceId, updates);
 export const removePageService = (pageId, serviceId) => deleteNoContent("/pages/" + pageId + "/services/" + serviceId);
 
+export const createChecker = (name, description, location, checkSecond) =>
+    postProp("/checkers", { name, description, location, checkSecond }, "id");
 export const getCheckers = () => getProp("/checkers", "checkers");
 export const getChecker = (checkerId, includes) => get(withIncludes("/checkers/" + checkerId, includes));
 

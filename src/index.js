@@ -8,6 +8,7 @@ import Service from "./services/service";
 import CreatePage from "./pages/createPage";
 import Pages from "./pages/pages";
 import Page from "./pages/page";
+import CreateChecker from "./checkers/createChecker";
 import Checkers from "./checkers/checkers";
 import Checker from "./checkers/checker";
 import Groups from "./groups/groups";
@@ -36,6 +37,7 @@ class App extends Component {
                         <Route path="/pages/create" element={<CreatePage />} />
                         <Route path="/pages/:pageId" element={<Page />} />
                         <Route path="/checkers" element={<Checkers />} />
+                        <Route path="/checkers/create" element={<CreateChecker />} />
                         <Route path="/checkers/:checkerId" element={<Checker />} />
                         <Route path="/groups" element={<Groups />} />
                         <Route path="/groups/:groupId" element={<Group />} />
