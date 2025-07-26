@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
     getGroup,
     removeGroupService,
@@ -6,7 +6,8 @@ import {
     getServices,
     addGroupService,
     getCheckers,
-    addGroupChecker
+    addGroupChecker,
+    updateGroup
 } from "../api";
 import { Link, useParams } from "react-router-dom";
 
@@ -16,6 +17,8 @@ const Group = () => {
     const [group, setGroup] = useState(null);
     const [services, setServices] = useState(null);
     const [checkers, setCheckers] = useState(null);
+    const [editing, setEditing] = useState(false);
+    const nameInputRef = useRef();
     const { groupId } = useParams();
 
     useEffect(() => {
@@ -30,6 +33,28 @@ const Group = () => {
                 setInfo(error);
             });
     }, [groupId]);
+
+    const handleEdit = () => {
+        const newName = nameInputRef.current.value.trim();
+
+        if (newName === group.name) {
+            setEditing(false);
+            return;
+        }
+
+        setLoading(true);
+        setInfo(null);
+        updateGroup(group.id, { name: newName })
+            .then(() => {
+                setGroup({ ...group, name: newName });
+                setEditing(false);
+                setLoading(false);
+            })
+            .catch((error) => {
+                setInfo(error);
+                setLoading(false);
+            });
+    };
 
     const removeServiceHandler = (service) => {
         setLoading(true);
@@ -156,7 +181,39 @@ const Group = () => {
 
             {group && (
                 <>
-                    <div>Name: {group.name}</div>
+                    {!editing ? (
+                        <>
+                            <div>Name: {group.name}</div>
+
+                            <div className="buttons">
+                                <button disabled={loading} onClick={() => setEditing(true)}>
+                                    Edit
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="input-field">
+                                <div>Name:</div>
+                                <input
+                                    ref={nameInputRef}
+                                    defaultValue={group.name}
+                                    disabled={loading}
+                                    autoFocus
+                                    onKeyDown={(event) => event.key === "Enter" && handleEdit()}
+                                />
+                            </div>
+
+                            <div className="buttons">
+                                <button disabled={loading} onClick={handleEdit}>
+                                    Save
+                                </button>
+                                <button disabled={loading} onClick={() => setEditing(false)}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </>
+                    )}
                     <br />
 
                     <div>Services:</div>

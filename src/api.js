@@ -26,6 +26,7 @@ export const updateChecker = (checkerId, updates) => patchNoContent("/checkers/"
 export const createGroup = (name) => postProp("/groups", { name }, "id");
 export const getGroups = (includes) => getProp(withIncludes("/groups", includes), "groups");
 export const getGroup = (groupId, includes) => get(withIncludes("/groups/" + groupId, includes));
+export const updateGroup = (groupId, updates) => patchNoContent("/groups/" + groupId, updates);
 
 export const addGroupService = (groupId, serviceId) => putNoContent("/groups/" + groupId + "/services/" + serviceId);
 export const removeGroupService = (groupId, serviceId) =>
