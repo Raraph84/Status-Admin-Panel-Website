@@ -21,6 +21,7 @@ export const createChecker = (name, description, location, checkSecond) =>
     postProp("/checkers", { name, description, location, checkSecond }, "id");
 export const getCheckers = () => getProp("/checkers", "checkers");
 export const getChecker = (checkerId, includes) => get(withIncludes("/checkers/" + checkerId, includes));
+export const updateChecker = (checkerId, updates) => patchNoContent("/checkers/" + checkerId, updates);
 
 export const createGroup = (name) => postProp("/groups", { name }, "id");
 export const getGroups = (includes) => getProp(withIncludes("/groups", includes), "groups");

@@ -150,7 +150,7 @@ class Page extends Component {
                 <div>Logo URL: <a href={this.state.page?.logoUrl} target="_blank" rel="noreferrer">{this.state.page?.logoUrl}</a></div>
                 <div>Domain: {this.state.page?.domain ? <a href={"https://" + this.state.page.domain} target="_blank" rel="noreferrer">{this.state.page.domain}</a> : "N/A"}</div>
 
-                <div className="buttons"><button disabled={this.state.loading} onClick={() => this.setState({ editing: true })}>Edit Page</button></div>
+                <div className="buttons"><button disabled={this.state.loading} onClick={() => this.setState({ editing: true })}>Edit</button></div>
 
             </> : <>
 
