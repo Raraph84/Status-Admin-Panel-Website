@@ -11,6 +11,7 @@ import Page from "./pages/page";
 import CreateChecker from "./checkers/createChecker";
 import Checkers from "./checkers/checkers";
 import Checker from "./checkers/checker";
+import CreateGroup from "./groups/createGroup";
 import Groups from "./groups/groups";
 import Group from "./groups/group";
 
@@ -40,6 +41,7 @@ class App extends Component {
                         <Route path="/checkers/create" element={<CreateChecker />} />
                         <Route path="/checkers/:checkerId" element={<Checker />} />
                         <Route path="/groups" element={<Groups />} />
+                        <Route path="/groups/create" element={<CreateGroup />} />
                         <Route path="/groups/:groupId" element={<Group />} />
                         <Route path="*" element={<div className="title">This page does not exists</div>} />
                     </Routes>

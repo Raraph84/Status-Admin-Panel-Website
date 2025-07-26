@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { LinkedTr } from "../utils";
 import { getGroups } from "../api";
 
@@ -26,6 +27,11 @@ const Groups = () => {
 
             {loading && <div className="state">Loading...</div>}
             {info && <div className="state">{info}</div>}
+
+            <div>
+                <Link to="/groups/create">Create group</Link>
+            </div>
+            <br />
 
             {groups && (
                 <table>
