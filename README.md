@@ -6,9 +6,9 @@ This is the managing panel part of my status system available at https://github.
 
 ### Prerequisites
 
-- Have already setup the API
+- The API set up
 - Git installed to clone the repo
-- NodeJS installed to build
+- NodeJS installed to build the panel
 
 ### Building
 
