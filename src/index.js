@@ -14,6 +14,7 @@ import Checker from "./checkers/checker";
 import CreateGroup from "./groups/createGroup";
 import Groups from "./groups/groups";
 import Group from "./groups/group";
+import Matrix from "./matrix/matrix";
 
 import "./common.scss";
 
@@ -27,6 +28,7 @@ class App extends Component {
                     <Link to="/pages">Pages</Link>
                     <Link to="/checkers">Checkers</Link>
                     <Link to="/groups">Groups</Link>
+                    <Link to="/matrix">Matrix</Link>
                 </header>
                 <main>
                     <Routes>
@@ -43,6 +45,7 @@ class App extends Component {
                         <Route path="/groups" element={<Groups />} />
                         <Route path="/groups/create" element={<CreateGroup />} />
                         <Route path="/groups/:groupId" element={<Group />} />
+                        <Route path="/matrix" element={<Matrix />} />
                         <Route path="*" element={<div className="title">This page does not exists</div>} />
                     </Routes>
                 </main>
